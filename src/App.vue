@@ -1,0 +1,391 @@
+<template>
+  <Transition name="fade-in">
+    <div @click="toggleMenu()" v-show="isMenuOpen" id="sidebar-bg"></div>
+  </Transition>
+
+  <Transition name="fade-in-left">
+    <div v-show="isMenuOpen" id="sidebar">
+      <AppMenu />
+    </div>
+  </Transition>
+
+  <div id="main" :class="{noMarginLeft: !isMenuOpen}">
+    <div id="navbar">
+      <span @click="toggleMenu()" class="material-icons">menu</span>
+      {{ $route.meta.title }}
+    </div>
+
+    <router-view/>
+  </div>
+</template>
+
+<script>
+import AppMenu from './components/AppMenu.vue'
+
+export default {
+  name: 'App',
+
+  components: {
+    AppMenu
+  },
+
+  created () {
+    if (innerWidth > 768) {
+      this.isMenuOpen = true
+    }
+
+    window.addEventListener('resize', () => {
+      if (innerWidth > 768) {
+        this.isMenuOpen = true
+      } else {
+        this.isMenuOpen = false
+      }
+    })
+    
+  },
+
+  data() {
+    return {
+      isMenuOpen: false
+    }
+  },
+
+  watch: {
+    $route: {
+      immediate: true,
+
+      // Change title when route changes
+      handler(to) {
+        document.title = to.meta.title || 'MTLKMS'
+        
+        if (innerWidth < 768) {
+          this.isMenuOpen = false
+        }
+      }
+    }
+  },
+
+  methods: {
+    toggleMenu() {
+      this.isMenuOpen = !this.isMenuOpen
+    }
+    
+  }
+}
+</script>
+
+<style>
+/* --------------------------------------------------- */
+/* Custom                                              */
+/* --------------------------------------------------- */
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+ 
+::-webkit-scrollbar-thumb {
+  background: #ff907f50;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ff907f80;
+}
+
+/* Disable select */
+.material-icons {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+body {
+  font-family: 'Andika New Basic', sans-serif;
+  font-size: 15px;
+  padding: 0;
+  margin: 0;
+}
+
+input {
+  font-family: 'Andika New Basic', sans-serif;
+}
+
+/* --------------------------------------------------- */
+/* Layout                                              */
+/* --------------------------------------------------- */
+
+#sidebar {
+  width: 300px;
+  max-width: 85%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  padding: .5rem;
+  box-sizing: border-box;
+  z-index: 25;
+  background: #fff;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border: 1px solid #eee;
+}
+
+#main {
+  position: relative;
+  transition: margin-left 0.5s;
+}
+
+#navbar {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: .25rem;
+  margin: 0;
+  margin-bottom: 1rem;
+  background: #fff;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  z-index: 20;
+}
+
+#navbar span {
+  margin-right: .25rem;
+  border-radius: 50%;
+  padding: .75rem;
+  transition: background-color .5s;
+}
+
+#navbar span:hover {
+  cursor: pointer;
+  background-color: #f5f5f5;
+}
+
+@media screen and (max-width: 768px) {
+  #sidebar {
+    width: 350px;
+  }
+
+  #sidebar-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.25);
+    z-index: 21;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  #main {
+    margin-left: 300px;
+  }
+
+  .noMarginLeft {
+    margin-left: 0 !important;
+  }
+}
+
+/* --------------------------------------------------- */
+/* Animation                                           */
+/* --------------------------------------------------- */
+
+.fade-in-left-enter-active,
+.fade-in-left-leave-active {
+  transition: all 0.5s;
+}
+
+.fade-in-left-enter-from,
+.fade-in-left-leave-to {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.fade-in-enter-active,
+.fade-in-leave-active {
+  transition: all 0.5s;
+}
+
+.fade-in-enter-from,
+.fade-in-leave-to {
+  opacity: 0;
+}
+
+/* --------------------------------------------------- */
+/* Form                                                */
+/* --------------------------------------------------- */
+
+.input {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem 0;
+  padding-right: 1rem;
+  background-color: #ff907f10;
+  border-radius: .25rem;
+}
+
+.input span {
+  display: block;
+  color: #ff907f;
+  padding-left: .75rem;
+}
+
+.input p {
+  position: absolute;
+  top: 1px;
+  left: 2.75rem;
+  margin-right: 1rem;
+  color: #333;
+  font-family: 'Andika New Basic', sans-serif;
+  font-size: 13px;
+  opacity: 0;
+  transition: opacity .5s, padding-left .5s;
+  box-sizing: border-box;
+}
+
+.input input {
+  display: block;
+  width: 100%;
+  padding: .75rem;
+  padding-right: 5rem;
+  padding-left: .75rem;
+  box-sizing: border-box;
+  outline: none;
+  border: none;
+  background-color: transparent;
+  color: #333;
+  opacity: .8;
+  transition: opacity .5s;
+  font-family: 'Andika New Basic', sans-serif;
+  font-size: 13px;
+}
+
+.input input:focus {
+  opacity: 1;
+}
+
+.input input:focus ~ span {
+  opacity: 1;
+  background-color: #333;
+}
+
+.input input::placeholder {
+  color: #333;
+  opacity: .75;
+  font-family: 'Andika New Basic', sans-serif;
+  font-size: 13px;
+}
+
+.input input:not(:placeholder-shown) + p {
+  padding-left: calc(100% - 8rem);
+  text-align: right;
+  opacity: .5;
+}
+
+/* --------------------------------------------------- */
+/* Button                                              */
+/* --------------------------------------------------- */
+
+.btn {
+  position: relative;
+  display: inline-block;
+  padding: .75rem 1.5rem;
+  margin: 1rem 0;
+  border-radius: .25rem;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: #ff907f10;
+  color: #ff907f;
+  border: none;
+  transition: background-color .5s, color .5s;
+  transition-delay: .5s;
+  text-transform: uppercase;
+}
+
+.btn-primary:hover {
+  background-color: #ff907f;
+  color: #fff;
+}
+
+.btn-primary::after {
+  position: absolute;
+  display: block;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100% - 3px);
+  background-color: #333;
+  border-bottom: 1px solid #ff907f;
+  z-index: 5;
+}
+
+/* --------------------------------------------------- */
+/* Custom class                                        */
+/* --------------------------------------------------- */
+
+.container {
+  position: relative;
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.container-sm {
+  max-width: 540px;
+}
+
+.container-md {
+  max-width: 720px;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+}
+
+.avatar-lg {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+}
+
+.avatar-sm {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
+.d-block {
+  display: block;
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+</style>
