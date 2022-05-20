@@ -5,8 +5,8 @@
 
         <label class="input">
             <span class="material-icons">email</span>
-            <input type="email" name="email" required placeholder="Email">
-            <p>Email</p>
+            <input type="email" name="email" required placeholder="Email or Username">
+            <p>Email/Username</p>
         </label>
 
         <label class="input">
@@ -16,7 +16,7 @@
         </label>
 
         <div class="footer">
-            <div class="btn btn-primary">Đăng nhập</div>
+            <button class="btn btn-primary">Đăng nhập</button>
 
             <div>
                 <p>Chưa có tài khoản? <a href="/register">[Đăng Ký]</a></p>

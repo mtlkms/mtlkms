@@ -15,7 +15,9 @@
       {{ $route.meta.title }}
     </div>
 
-    <router-view/>
+    <Transition name="fade-in-slow">
+      <router-view />
+    </Transition>
   </div>
 </template>
 
@@ -225,6 +227,16 @@ input {
   opacity: 0;
 }
 
+.fade-in-slow-enter-active,
+.fade-in-slow-leave-active {
+  transition: all 1s;
+}
+
+.fade-in-slow-enter-from,
+.fade-in-slow-leave-to {
+  opacity: 0;
+}
+
 /* --------------------------------------------------- */
 /* Form                                                */
 /* --------------------------------------------------- */
@@ -253,20 +265,22 @@ input {
   position: absolute;
   top: 1px;
   left: 2.75rem;
+  width: 6rem;
   margin-right: 1rem;
   color: #333;
   font-family: 'Andika New Basic', sans-serif;
   font-size: 13px;
   opacity: 0;
-  transition: opacity .5s, padding-left .5s;
+  transition: opacity .5s, margin-left .5s;
   box-sizing: border-box;
+  text-align: right;
 }
 
 .input input {
   display: block;
   width: 100%;
   padding: .75rem;
-  padding-right: 5rem;
+  padding-right: 7rem;
   padding-left: .75rem;
   box-sizing: border-box;
   outline: none;
@@ -296,7 +310,7 @@ input {
 }
 
 .input input:not(:placeholder-shown) + p {
-  padding-left: calc(100% - 8rem);
+  margin-left: calc(100% - 10rem);
   text-align: right;
   opacity: .5;
 }
@@ -308,19 +322,36 @@ input {
 .btn {
   position: relative;
   display: inline-block;
-  padding: .75rem 1.5rem;
+  padding: .75rem 1.75rem;
   margin: 1rem 0;
+  border: none;
   border-radius: .25rem;
   cursor: pointer;
+  font-family: 'Andika New Basic', sans-serif;
+  font-size: 13px;
+  text-transform: uppercase;
+  text-decoration: none;
 }
 
 .btn-primary {
   background-color: #ff907f10;
-  color: #ff907f;
-  border: none;
+  color: #e6705d;
+  box-shadow: .25rem .25rem .5rem #ff907f30;
   transition: background-color .5s, color .5s;
   transition-delay: .5s;
-  text-transform: uppercase;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: calc(100% - 2px);
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background-color: #ff907f;
+  border-radius: .25rem;
+  overflow: hidden;
+  transition: left .5s, width .5s;
 }
 
 .btn-primary:hover {
@@ -328,18 +359,10 @@ input {
   color: #fff;
 }
 
-.btn-primary::after {
-  position: absolute;
-  display: block;
-  top: 0;
+.btn-primary:hover::before {
   left: 0;
   width: 100%;
-  height: calc(100% - 3px);
-  background-color: #333;
-  border-bottom: 1px solid #ff907f;
-  z-index: 5;
 }
-
 /* --------------------------------------------------- */
 /* Custom class                                        */
 /* --------------------------------------------------- */
