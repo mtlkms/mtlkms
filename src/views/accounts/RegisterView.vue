@@ -44,3 +44,27 @@
     </form>
 </div>
 </template>
+
+<script>
+// import API from '/src/assets/js/api'
+// import Store from '/src/assets/js/store'
+
+// let api = new API()
+// let store = new Store()
+
+export default {
+    name: 'RegisterView',
+
+    data () {
+        return {
+            
+        }
+    },
+    
+    methods: {
+        submitForm () {
+
+        }
+    }
+}
+</script>
