@@ -8,11 +8,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use('/', routes);
 
-const server = app.listen(3000, () => {
-    let host :string = server.address().address;
-    let port :string = server.address().port;
-
-    console.log('Example app listening at http://%s:%s', host, port)
+const PORT: number = 3000;
+const server = app.listen(PORT, () => {
+    console.log('Example app listening at http://localhost:%s', PORT);
 });
 
 export default app;
