@@ -8,7 +8,13 @@ router.get('/', (req, res, next) => {
 });
 
 router.post('/account', (req, res, next) => {
-    account.create(req.data);
+    account.create([req.body.name, req.body.email, req.body.username, req.body.password])
+    .then(result => {
+        res.send(result);
+    })
+    .catch(err => {
+        res.send(err);
+    });
 });
 
 export default router;
