@@ -4,3 +4,4 @@ salt.ts
 salt.js
 docker-compose.yml
 mysqldata/*
+node_modules
