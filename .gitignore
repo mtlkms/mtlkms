@@ -1,4 +1,6 @@
 dbpwd.js
 dbpwd.ts
+salt.ts
+salt.js
 docker-compose.yml
 mysqldata/*

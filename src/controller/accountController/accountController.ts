@@ -1,5 +1,7 @@
+import * as md5 from 'md5';
 import account from "../../model/account/account";
 import validator from "../../model/validator";
+import salt from "../../salt";
 
 interface UserData {
     username: string;
@@ -34,36 +36,36 @@ class AccountController {
 
     }
 
-    public create (data: UserData) {
-        return new Promise((resolve, reject) => {
-            if (!data.name || !data.username || !data.password || !data.email) {
-                reject("Invalid data");
-            }
-            else if (!validator.isValidName(data.name)) {
-                reject("Invalid name");
-            }
-            else if (!validator.isValidEmail(data.email)) {
-                reject("Invalid email");
-            }
-            else if (!validator.isValidUsername(data.username)) {
-                reject("Invalid username");
-            }
-            else if (!validator.isValidPassword(data.password)) {
-                reject("Invalid password");
-            }
-            
-            let name = validator.htmlEncode(data.name);
-            let email = validator.htmlEncode(data.email);
-            let username = validator.htmlEncode(data.username);
-            let password = validator.htmlEncode(data.password);
-            
-            account.create([name, email, username, password])
-            .then(result => {
-                resolve(result);
-            })
-            .catch(err => {
-                reject(err);
-            });
+    public async create (data: UserData) {
+        if (!data.name || !data.username || !data.password || !data.email) {
+            throw new Error("Invalid data");
+        }
+        else if (!validator.isValidName(data.name)) {
+            throw new Error("Invalid name");
+        }
+        else if (!validator.isValidEmail(data.email)) {
+            throw new Error("Invalid email");
+        }
+        else if (!validator.isValidUsername(data.username)) {
+            throw new Error("Invalid username");
+        }
+        else if (!validator.isValidPassword(data.password)) {
+            throw new Error("Invalid password");
+        }
+        
+        let name: string = validator.htmlEncode(data.name);
+        let email: string = validator.htmlEncode(data.email);
+        let username: string = validator.htmlEncode(data.username);
+
+        // Hash the password
+        let password: string = md5(data.password + salt);
+        
+        await account.create([name, email, username, password])
+        .then(result => {
+            return result;
+        })
+        .catch(err => {
+            throw err;
         });
     }
 
@@ -78,9 +80,10 @@ class AccountController {
             throw new Error("Invalid username");
         }
 
-        data.name = validator.htmlEncode(data.name);
+        let name: string = validator.htmlEncode(data.name);
+        let hash: string = md5(data.password + salt);
 
-        await account.changeName([data.name, username, data.password])
+        await account.changeName([name, username, hash])
         .then((result: DbResult) => {
             if (result.affectedRows === 0) {
                 throw new Error("Username not found or password is incorrect");
@@ -105,7 +108,10 @@ class AccountController {
             throw new Error("Invalid new password");
         }
 
-        await account.changePassword([data.newPassword, username, data.password])
+        let hash = md5(data.password + salt);
+        let newHash = md5(data.newPassword + salt);
+
+        await account.changePassword([newHash, username, hash])
         .then((result: DbResult) => {
             if (result.affectedRows === 0) {
                 console.error(result);
