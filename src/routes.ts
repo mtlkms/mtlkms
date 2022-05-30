@@ -1,5 +1,5 @@
 import * as express from 'express';
-import account from './account/account';
+import accountController from './controller/accountController/accountController';
 
 const router = express.Router();
 
@@ -8,12 +8,22 @@ router.get('/', (req, res, next) => {
 });
 
 router.post('/account', (req, res, next) => {
-    account.create([req.body.name, req.body.email, req.body.username, req.body.password])
+    accountController.create(req.body)
     .then(result => {
         res.send(result);
     })
     .catch(err => {
-        res.send(err);
+        res.status(400).send('Error: ' + err);
+    });
+});
+
+router.put('/account/:username', (req, res, next) => {
+    accountController.changeName(req.params.username, req.body)
+    .then(result => {
+        res.send(result);
+    })
+    .catch(err => {
+        res.status(400).send('Error: ' + err);
     });
 });
 

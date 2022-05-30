@@ -1,5 +1,4 @@
 import * as express from 'express';
-// import * as bodyParser from 'body-parser';
 import connection from './dbconnection';
 import routes from './routes';
 
