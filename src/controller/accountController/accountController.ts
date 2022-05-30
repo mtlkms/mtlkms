@@ -8,6 +8,9 @@ interface UserData {
     password: string;
     name: string;
     email: string;
+    id: number;
+    forget_pwd: string;
+    created_at: string;
 }
 
 interface changeNameData {
@@ -36,6 +39,30 @@ class AccountController {
 
     }
 
+    public async get (username: string) {
+        if (!validator.isValidUsername(username)) {
+            throw new Error("Invalid username");
+        }
+
+        return await account.get(username)
+        .then(result => {
+            return result;
+        })
+        .catch(err => {
+            throw err;
+        });
+    }
+
+    public async getAll () {
+        return await account.getAll()
+        .then(result => {
+            return result;
+        })
+        .catch(err => {
+            throw err;
+        });
+    }
+
     public async create (data: UserData) {
         if (!data.name || !data.username || !data.password || !data.email) {
             throw new Error("Invalid data");
@@ -60,9 +87,35 @@ class AccountController {
         // Hash the password
         let password: string = md5(data.password + salt);
         
-        await account.create([name, email, username, password])
-        .then(result => {
-            return result;
+        return await account.create([name, email, username, password])
+        .then((result: DbResult) => {
+            let token = md5(result.insertId + salt);
+            return token;
+        })
+        .catch(err => {
+            throw err;
+        });
+    }
+
+    public async login (data: UserData) {
+        if (!data.username || !data.password) {
+            throw new Error("Invalid data");
+        }
+        else if (!validator.isValidUsername(data.username)) {
+            throw new Error("Invalid username");
+        }
+
+        let password: string = md5(data.password + salt);
+
+        return await account.login([data.username, password])
+        .then((result: UserData) => {
+            if (!result) {
+                throw new Error("Username not found or password is incorrect");
+            }
+            else {
+                let token = md5(result.id + salt);
+                return token;
+            }
         })
         .catch(err => {
             throw err;
@@ -83,7 +136,7 @@ class AccountController {
         let name: string = validator.htmlEncode(data.name);
         let hash: string = md5(data.password + salt);
 
-        await account.changeName([name, username, hash])
+        return await account.changeName([name, username, hash])
         .then((result: DbResult) => {
             if (result.affectedRows === 0) {
                 throw new Error("Username not found or password is incorrect");
@@ -111,10 +164,9 @@ class AccountController {
         let hash = md5(data.password + salt);
         let newHash = md5(data.newPassword + salt);
 
-        await account.changePassword([newHash, username, hash])
+        return await account.changePassword([newHash, username, hash])
         .then((result: DbResult) => {
             if (result.affectedRows === 0) {
-                console.error(result);
                 throw new Error("Username not found or password is incorrect");
             }
             else {
@@ -122,7 +174,6 @@ class AccountController {
             }
         })
         .catch(err => {
-            console.error(err);
             throw err;
         });
     }

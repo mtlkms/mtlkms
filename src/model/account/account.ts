@@ -5,14 +5,26 @@ class Account {
 
     }
     
-    getUser(username: string) {
+    get(username: string) {
         return new Promise((resolve, reject) => {
-            db.query('SELECT * FROM users WHERE username=?', [username])
-            .then(result => {
-                resolve(result);
-            })
-            .catch(err => {
-                reject(err);
+            db.query('SELECT * FROM users where username=?', [username], (err, result) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(result[0]);
+                }
+            });
+        });
+    }
+
+    getAll() {
+        return new Promise((resolve, reject) => {
+            db.query('SELECT * FROM users', (err, result) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(result);
+                }
             });
         });
     }
@@ -24,6 +36,18 @@ class Account {
                     reject(err);
                 } else {
                     resolve(result);
+                }
+            });
+        });
+    }
+
+    login(data: Array<string>) {
+        return new Promise((resolve, reject) => {
+            db.query('SELECT * FROM users WHERE username=? AND password=?', data, (err, result) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(result[0]);
                 }
             });
         });
