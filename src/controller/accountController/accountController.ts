@@ -13,6 +13,11 @@ interface changeNameData {
     password: string;
 }
 
+interface changePasswordData {
+    password: string;
+    newPassword: string;
+}
+
 interface DbResult {
     affectedRows: number;
     insertId: number;
@@ -63,7 +68,10 @@ class AccountController {
     }
 
     public async changeName (username: string, data: changeNameData) {
-        if (!validator.isValidName(data.name)) {
+        if (!data.name || !data.password) {
+            throw new Error("Invalid data");
+        }
+        else if (!validator.isValidName(data.name)) {
             throw new Error("Invalid name");
         }
         else if (!validator.isValidUsername(username)) {
@@ -74,7 +82,6 @@ class AccountController {
 
         await account.changeName([data.name, username, data.password])
         .then((result: DbResult) => {
-            console.log(result);
             if (result.affectedRows === 0) {
                 throw new Error("Username not found or password is incorrect");
             }
@@ -83,6 +90,33 @@ class AccountController {
             }
         })
         .catch(err => {
+            throw err;
+        });
+    }
+
+    public async changePassword (username: string, data: changePasswordData) {
+        if (!data.password || !data.newPassword) {
+            throw new Error("Invalid data");
+        }
+        else if (!validator.isValidUsername(username)) {
+            throw new Error("Invalid username");
+        }
+        else if (!validator.isValidPassword(data.newPassword)) {
+            throw new Error("Invalid new password");
+        }
+
+        await account.changePassword([data.newPassword, username, data.password])
+        .then((result: DbResult) => {
+            if (result.affectedRows === 0) {
+                console.error(result);
+                throw new Error("Username not found or password is incorrect");
+            }
+            else {
+                return result;
+            }
+        })
+        .catch(err => {
+            console.error(err);
             throw err;
         });
     }

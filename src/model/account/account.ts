@@ -40,6 +40,18 @@ class Account {
             });
         });
     }
+
+    changePassword(data: Array<string>) {
+        return new Promise((resolve, reject) => {
+            db.query('UPDATE users SET password=? WHERE username=? AND password=?', data, (err, result) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(result);
+                }
+            });
+        });
+    }
 }
 
 export default new Account();
