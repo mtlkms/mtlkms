@@ -71,11 +71,8 @@
 </style>
 
 <script>
-import API from '/src/assets/js/api'
-import Store from '/src/assets/js/store'
-
-let api = new API()
-let store = new Store()
+import api from '/src/assets/js/api'
+import store from '/src/assets/js/store'
 
 export default {
     name: 'RegisterView',
@@ -105,13 +102,13 @@ export default {
 
             api.post('/register', this.form)
             .then(res => {
-                console.log(res)
                 if (res.status === 200) {
                     res.json().then(data => {
                         this.isSuccess = true
                         this.apiLog = '';
                         this.log = "Đăng ký thành công"
                         store.set('user', data.user)
+                        store.set('isLogin', true)
                         this.$router.push('/')
                     })
                 }

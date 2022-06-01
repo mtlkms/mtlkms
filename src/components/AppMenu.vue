@@ -1,17 +1,25 @@
 <template>
 <div>
     <div id="appmenu-top">
-        <img src="/img/icons/180.png" class="avatar d-block mx-auto">
-        <h3>Xin chào Củi Khô!</h3>
-        <hr>
-        <p>Hiện bạn chưa học gì!</p>
-        <hr>
-        <p>Bạn còn 3 mục tiêu hằng ngày chưa hoàn tất!</p>
+        <div v-if="!data.isLogin">
+            <img src="/img/icons/180.png" class="avatar d-block mx-auto">
+            <h3>MTLKMS</h3>
+            <hr>
+            <p>Học hành chăm chỉ :(</p>
+        </div>
+        <div v-else>
+            <img src="/img/icons/180.png" class="avatar d-block mx-auto">
+            <h3>Xin chào {{ data.user.name }}!</h3>
+            <hr>
+            <p>Hiện bạn chưa học gì!</p>
+            <hr>
+            <p>Bạn còn 99 mục tiêu hằng ngày chưa hoàn tất!</p>
+        </div>
     </div>
 
     <div>
         <div v-for="(link, index) in links" :key="index">
-            <router-link :to="link.path" :class="{active: isActive(link), link: true}">
+            <router-link :to="link.path" :class="{active: isActive(link), link: true}" v-if="data.isLogin == link.auth">
                 <span class="material-icons">{{ link.icon }}</span>
                 {{ link.name }}
             </router-link>
@@ -21,11 +29,14 @@
 </template>
 
 <script>
+import store from '/src/assets/js/store'
+
 export default {
     name: 'AppMenu',
 
     data() {
         return {
+            data: store.getAll(),
             links: [
                 {
                     name: 'Trang Chủ',

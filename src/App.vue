@@ -25,6 +25,7 @@
 
 <script>
 import AppMenu from './components/AppMenu.vue'
+import store from '/src/assets/js/store'
 
 export default {
   name: 'App',
@@ -34,6 +35,10 @@ export default {
   },
 
   created () {
+    if (!this.data.isLogin) {
+      this.$router.push('/login')
+    }
+
     if (innerWidth > 768) {
       this.isMenuOpen = true
     }
@@ -50,7 +55,8 @@ export default {
 
   data() {
     return {
-      isMenuOpen: false
+      isMenuOpen: false,
+      data: store.getAll()
     }
   },
 

@@ -3,16 +3,23 @@
     <form action="" method="POST" @submit.prevent='submitForm()'>
         <h2 class="mb-4">Đăng nhập</h2>
 
+        <transition name="fade-in">
+            <div class="log" v-show="log" :class="isSuccess ? 'success' : 'error'">
+                <p>{{ apiLog }}</p>
+                <p>{{ log }}</p>
+            </div>
+        </transition>
+
         <label class="input">
-            <span class="material-icons">email</span>
-            <input type="email" name="email" required placeholder="Email or Username">
-            <p>Email/Username</p>
+            <span class="material-icons">person</span>
+            <input type="text" name="username" required placeholder="Username" v-model="form.username">
+            <p>Username</p>
         </label>
 
         <label class="input">
             <span class="material-icons">lock</span>
-            <input type="password" name="password" required placeholder="Mật khẩu">
-            <p>Mật khẩu</p>
+            <input type="password" name="password" required placeholder="Mật khẩu" v-model="form.password">
+            <p>Password</p>
         </label>
 
         <div class="footer">
@@ -27,25 +34,99 @@
 </div>
 </template>
 
-<script>
-// import API from '/src/assets/js/api'
-// import Store from '/src/assets/js/store'
+<style scoped>
+.log {
+    padding: .25rem 1rem;
+    border-radius: .25rem;
+    font-size: 12px;
+}
 
-// let api = new API()
-// let store = new Store()
+.error {
+    color: red;
+    background-color: #ff000010;
+}
+
+.success {
+    color: green;
+    background-color: #00ff0010;
+}
+</style>
+
+<script>
+import api from '/src/assets/js/api'
+import store from '/src/assets/js/store'
 
 export default {
     name: 'LoginView',
 
-    data() {
+    created () {
+        this.checkLogin();
+    },
+
+    data () {
         return {
-            
+            form: {
+                username: '',
+                password: ''
+            },
+            isSuccess: false,
+            apiLog: '',
+            log: ''
         }
     },
 
     methods: {
         submitForm() {
-            
+            api.post('/login', this.form)
+            .then(res => {
+                console.log(res)
+                if (res.status === 200) {
+                    res.json().then(data => {
+                        this.isSuccess = true
+                        this.apiLog = '';
+                        this.log = "Đăng ký thành công"
+                        store.set('user', data.user)
+                        store.set('isLogin', true)
+                        this.$router.push('/')
+                    })
+                }
+                else {
+                    res.json().then(data => {
+                        this.isSuccess = false
+                        this.apiLog = data.error
+                        this.showLog()
+                    })
+                }
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        },
+
+        showLog () {
+            if (this.apiLog == 'Username not found or password is incorrect') this.log = 'Tên đăng nhập hoặc mật khẩu không chính xác'
+            else this.log = 'Đã có lỗi xảy ra'
+        },
+
+        checkLogin () {
+            if (store.get('isLogin')) {
+                this.$router.push('/')
+                return
+            }
+
+            api.get('/check-login')
+            .then(res => {
+                if (res.status === 200) {
+                    res.json().then(data => {
+                        store.set('user', data.user)
+                        store.set('isLogin', true)
+                        this.$router.push('/')
+                    })
+                }
+            })
+            .catch(err => {
+                console.log(err)
+            })
         }
     },
 }

@@ -1,11 +1,14 @@
-export default class API {
+class API {
     constructor () {
         this.host = 'http://localhost:3000';
 
     }
 
     get (url) {
-        return fetch(this.host + url)
+        return fetch(this.host + url, {
+            method: 'GET',
+            credentials: 'include'
+        })
     }
 
     post (url, data) {
@@ -27,3 +30,5 @@ export default class API {
         
     }
 }
+
+export default new API()

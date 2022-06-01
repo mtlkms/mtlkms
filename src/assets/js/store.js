@@ -1,6 +1,13 @@
-let data = {};
+let data = {
+    isLogin: false,
+    user: {
+        name: '',
+        email: '',
+        username: ''
+    }
+};
 
-export default class Store {
+class Store {
     constructor () {
 
     }
@@ -25,3 +32,5 @@ export default class Store {
         return data;
     }
 }
+
+export default new Store()
