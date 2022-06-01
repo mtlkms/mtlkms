@@ -17,6 +17,16 @@ class AccountController {
         return md5(password + salt);
     }
 
+    private getUsernameFromToken (token: string) : string {
+        let username = token.split('__')[0];
+        return username;
+    }
+
+    private matchToken (token: string, username: string) : boolean {
+        let usernameFromToken = this.getUsernameFromToken(token);
+        return usernameFromToken === username;
+    }
+
     public async get (username: string) {
         if (!validator.isValidUsername(username)) {
             throw new Error("Invalid username");
@@ -87,7 +97,6 @@ class AccountController {
             return {
                 token: token,
                 user: {
-                    id: userData.id,
                     name: userData.name,
                     username: userData.username,
                     email: userData.email
