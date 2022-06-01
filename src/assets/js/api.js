@@ -1,54 +1,29 @@
 export default class API {
     constructor () {
-        this.host = 'http://localhost:8080';
+        this.host = 'http://localhost:3000';
 
     }
 
-    get (url, callback) {
-        let xhr = new XMLHttpRequest();
-
-        xhr.open('GET', this.host + url);
-
-        xhr.onload = () => {
-            callback(JSON.parse(xhr.responseText));
-        }
-
-        xhr.send();
+    get (url) {
+        return fetch(this.host + url)
     }
 
-    post (url, data, callback) {
-        let xhr = new XMLHttpRequest();
-
-        xhr.open('POST', this.host + url);
-
-        xhr.onload = () => {
-            callback(JSON.parse(xhr.responseText));
-        }
-
-        xhr.send(JSON.stringify(data));
+    post (url, data) {
+        return fetch(this.host + url, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
     }
 
-    put (url, data, callback) {
-        let xhr = new XMLHttpRequest();
-
-        xhr.open('PUT', this.host + url);
-
-        xhr.onload = () => {
-            callback(JSON.parse(xhr.responseText));
-        }
-
-        xhr.send(JSON.stringify(data));
+    put () {
+        
     }
 
-    delete (url, callback) {
-        let xhr = new XMLHttpRequest();
-
-        xhr.open('DELETE', this.host + url);
-
-        xhr.onload = () => {
-            callback(JSON.parse(xhr.responseText));
-        }
-
-        xhr.send();
+    delete () {
+        
     }
 }

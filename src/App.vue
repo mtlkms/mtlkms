@@ -15,9 +15,11 @@
       {{ $route.meta.title }}
     </div>
 
-    <Transition name="fade-in-slow">
-      <router-view />
-    </Transition>
+    <router-view v-slot="{ Component }">
+      <Transition name="fade-in-fast" mode="out-in">
+        <component :is="Component"></component>
+      </Transition>
+    </router-view>
   </div>
 </template>
 
@@ -109,14 +111,14 @@ export default {
 }
 
 body {
-  font-family: 'Andika New Basic', sans-serif;
+  font-family: 'Mali', sans-serif;
   font-size: 15px;
   padding: 0;
   margin: 0;
 }
 
 input {
-  font-family: 'Andika New Basic', sans-serif;
+  font-family: 'Mali', sans-serif;
 }
 
 /* --------------------------------------------------- */
@@ -227,13 +229,13 @@ input {
   opacity: 0;
 }
 
-.fade-in-slow-enter-active,
-.fade-in-slow-leave-active {
-  transition: all 1s;
+.fade-in-fast-enter-active,
+.fade-in-fast-leave-active {
+  transition: all .25s;
 }
 
-.fade-in-slow-enter-from,
-.fade-in-slow-leave-to {
+.fade-in-fast-enter-from,
+.fade-in-fast-leave-to {
   opacity: 0;
 }
 
@@ -268,7 +270,7 @@ input {
   width: 6rem;
   margin-right: 1rem;
   color: #333;
-  font-family: 'Andika New Basic', sans-serif;
+  font-family: 'Mali', sans-serif;
   font-size: 13px;
   opacity: 0;
   transition: opacity .5s, margin-left .5s;
@@ -289,7 +291,7 @@ input {
   color: #333;
   opacity: .8;
   transition: opacity .5s;
-  font-family: 'Andika New Basic', sans-serif;
+  font-family: 'Mali', sans-serif;
   font-size: 13px;
 }
 
@@ -305,7 +307,7 @@ input {
 .input input::placeholder {
   color: #333;
   opacity: .75;
-  font-family: 'Andika New Basic', sans-serif;
+  font-family: 'Mali', sans-serif;
   font-size: 13px;
 }
 
@@ -327,7 +329,7 @@ input {
   border: none;
   border-radius: .25rem;
   cursor: pointer;
-  font-family: 'Andika New Basic', sans-serif;
+  font-family: 'Mali', sans-serif;
   font-size: 13px;
   text-transform: uppercase;
   text-decoration: none;
@@ -339,6 +341,7 @@ input {
   box-shadow: .25rem .25rem .5rem #ff907f30;
   transition: background-color .5s, color .5s;
   transition-delay: .5s;
+  border: 1px solid #ff907f30;
 }
 
 .btn-primary::before {
