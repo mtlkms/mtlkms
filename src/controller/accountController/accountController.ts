@@ -9,8 +9,8 @@ class AccountController {
 
     }
 
-    private genToken (username: string, userData: UserData) : string {
-        return username + '__'  + md5(userData.id + salt);
+    private genToken (username: string, id: number) : string {
+        return username + '__'  + md5(id + salt);
     }
 
     private hashPassword (password: string) : string {
@@ -22,9 +22,9 @@ class AccountController {
         return username;
     }
 
-    private matchToken (token: string, username: string) : boolean {
-        let usernameFromToken = this.getUsernameFromToken(token);
-        return usernameFromToken === username;
+    private matchToken (token: string, userData: UserData) : boolean {
+        let userToken = this.genToken(userData.username, userData.id);
+        return token === userToken;
     }
 
     public async get (username: string) {
@@ -92,7 +92,7 @@ class AccountController {
             let userData: UserData = await account.get(username);
 
             // Create token
-            let token: string = this.genToken(username, userData);
+            let token: string = this.genToken(username, userData.id);
 
             return {
                 token: token,
@@ -109,25 +109,62 @@ class AccountController {
         if (!data.username || !data.password) {
             throw new Error("Invalid data");
         }
-        else if (!validator.isValidUsername(data.username)) {
-            throw new Error("Invalid username");
-        }
 
-        let password: string = md5(data.password + salt);
+        let password: string = this.hashPassword(data.password);
 
-        return await account.login([data.username, password])
+        // Login
+        let isLogin = await account.login([data.username, password])
         .then((result: UserData) => {
             if (!result) {
                 throw new Error("Username not found or password is incorrect");
             }
             else {
-                let token = md5(result.id + salt);
-                return token;
+                return false;
             }
         })
         .catch(err => {
             throw err;
         });
+
+        // Get user data
+        if (isLogin) {
+            throw isLogin;
+        }
+        else {
+            let userData: UserData = await account.get(data.username);
+
+            // Create token
+            let token: string = this.genToken(data.username, userData.id);
+
+            return {
+                token: token,
+                user: {
+                    name: userData.name,
+                    username: userData.username,
+                    email: userData.email
+                }
+            };
+        }
+    }
+
+    public async checkLogin (token: string) {
+        let username: string = this.getUsernameFromToken(token);
+
+        let userData = await account.get(username);
+
+        if (!userData) {
+            throw new Error("Invalid token");
+        }
+
+        if (!this.matchToken(token, userData)) {
+            throw new Error("Invalid token");
+        }
+
+        return {
+            name: userData.name,
+            username: userData.username,
+            email: userData.email
+        };
     }
 
     public async changeName (username: string, data: changeNameData) {

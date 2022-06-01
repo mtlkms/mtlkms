@@ -3,16 +3,16 @@ import accountController from '../../controller/accountController/accountControl
 
 const router = express.Router();
 
+const cookieConfig = {
+    httpOnly: false,
+    expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+}
+
 // Create a new account
 router.post('/register', (req, res, next) => {
     accountController.create(req.body)
     .then(data => {
-        res.cookie('token', data.token, {
-            // maxAge: 7 * 24 * 60 * 60 * 1000,
-            expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-            httpOnly: true
-        })
-        .json({
+        res.cookie('token', data.token, cookieConfig).json({
             success: true,
             user: data.user
         });
@@ -28,12 +28,10 @@ router.post('/register', (req, res, next) => {
 // Login
 router.post('/login', (req, res, next) => {
     accountController.login(req.body)
-    .then(token => {
-        res.cookie('token', token, {
-            httpOnly: true,
-        })
-        .json({
-            success: true
+    .then(data => {
+        res.cookie('token', data.token, cookieConfig).json({
+            success: true,
+            user: data.user
         });
     })
     .catch(err => {
@@ -43,5 +41,31 @@ router.post('/login', (req, res, next) => {
         });
     });
 });
+
+// Check Login
+router.get('/check-login', (req, res, next) => {
+    console.log(req.cookies);
+    if (!req.cookies.token) {
+        res.status(400).json({
+            success: false,
+            error: 'Not logged in yet'
+        })
+    }
+    else {
+        accountController.checkLogin(req.cookies.token)
+        .then(data => {
+            res.json({
+                success: true,
+                user: data
+            });
+        })
+        .catch(err => {
+            res.status(400).json({
+                success: false,
+                error: err.message
+            });
+        });
+    }
+})
 
 export default router;
