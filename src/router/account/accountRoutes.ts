@@ -5,6 +5,8 @@ const router = express.Router();
 
 const cookieConfig = {
     httpOnly: false,
+    secure: true,
+    sameSite: 'None',
     expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
 }
 
@@ -44,7 +46,6 @@ router.post('/login', (req, res, next) => {
 
 // Check Login
 router.get('/check-login', (req, res, next) => {
-    console.log(req.cookies);
     if (!req.cookies.token) {
         res.status(400).json({
             success: false,
