@@ -9,6 +9,14 @@ class AccountController {
 
     }
 
+    private genToken (username: string, userData: UserData) : string {
+        return username + '__'  + md5(userData.id + salt);
+    }
+
+    private hashPassword (password: string) : string {
+        return md5(password + salt);
+    }
+
     public async get (username: string) {
         if (!validator.isValidUsername(username)) {
             throw new Error("Invalid username");
@@ -55,7 +63,7 @@ class AccountController {
         let username: string = validator.htmlEncode(data.username);
 
         // Hash the password
-        let password: string = md5(data.password + salt);
+        let password: string = this.hashPassword(data.password);
         
         // Create user
         let result = await account.create([name, email, username, password])
@@ -74,7 +82,7 @@ class AccountController {
             let userData: UserData = await account.get(username);
 
             // Create token
-            let token = username + '__'  + md5(userData.id + salt);
+            let token: string = this.genToken(username, userData);
 
             return {
                 token: token,

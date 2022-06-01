@@ -6,7 +6,7 @@ class Account {
 
     }
     
-    get(username: string) : Promise<UserData> {
+    public get(username: string) : Promise<UserData> {
         return new Promise((resolve, reject) => {
             db.query('SELECT * FROM users where username=?', [username], (err, result) => {
                 if (err) {
@@ -18,7 +18,7 @@ class Account {
         });
     }
 
-    getAll() {
+    public getAll() {
         return new Promise((resolve, reject) => {
             db.query('SELECT * FROM users', (err, result) => {
                 if (err) {
@@ -30,7 +30,7 @@ class Account {
         });
     }
 
-    create(data: Array<string>) {
+    public create(data: Array<string>) {
         return new Promise((resolve, reject) => {
             db.query('INSERT INTO users(name, email, username, password) VALUES (?, ?, ?, ?)', data, (err, result) => {
                 if (err) {
@@ -42,7 +42,7 @@ class Account {
         });
     }
 
-    login(data: Array<string>) {
+    public login(data: Array<string>) {
         return new Promise((resolve, reject) => {
             db.query('SELECT * FROM users WHERE username=? AND password=?', data, (err, result) => {
                 if (err) {
@@ -54,7 +54,7 @@ class Account {
         });
     }
 
-    changeName(data: Array<string>) {
+    public changeName(data: Array<string>) {
         return new Promise((resolve, reject) => {
             db.query('UPDATE users SET name=? WHERE username=? AND password=?', data, (err, result) => {
                 if (err) {
@@ -66,7 +66,7 @@ class Account {
         });
     }
 
-    changePassword(data: Array<string>) {
+    public changePassword(data: Array<string>) {
         return new Promise((resolve, reject) => {
             db.query('UPDATE users SET password=? WHERE username=? AND password=?', data, (err, result) => {
                 if (err) {
