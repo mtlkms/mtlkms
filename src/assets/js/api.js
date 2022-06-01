@@ -1,6 +1,6 @@
 class API {
     constructor () {
-        this.host = 'http://localhost:3000';
+        this.host = 'https://server.test'
 
     }
 
