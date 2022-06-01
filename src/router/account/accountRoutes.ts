@@ -8,7 +8,7 @@ const cookieConfig = {
     secure: true,
     sameSite: 'None',
     expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
-}
+};
 
 // Create a new account
 router.post('/register', (req, res, next) => {
@@ -67,6 +67,17 @@ router.get('/check-login', (req, res, next) => {
             });
         });
     }
-})
+});
+
+router.get('/logout', (req, res, next) => {
+    res.clearCookie('token', {
+        httpOnly: false,
+        secure: true,
+        sameSite: 'None'
+    })
+    .json({
+        success: true
+    });
+});
 
 export default router;
