@@ -1,11 +1,12 @@
 import db from '../../dbconnection';
+import { UserData } from './accountInterface';
 
 class Account {
     constructor () {
 
     }
     
-    get(username: string) {
+    get(username: string) : Promise<UserData> {
         return new Promise((resolve, reject) => {
             db.query('SELECT * FROM users where username=?', [username], (err, result) => {
                 if (err) {

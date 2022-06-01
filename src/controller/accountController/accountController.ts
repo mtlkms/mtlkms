@@ -2,37 +2,7 @@ import * as md5 from 'md5';
 import account from "../../model/account/account";
 import validator from "../../model/validator";
 import salt from "../../salt";
-
-interface UserData {
-    username: string;
-    password: string;
-    name: string;
-    email: string;
-    id: number;
-    forget_pwd: string;
-    created_at: string;
-}
-
-interface changeNameData {
-    name: string;
-    password: string;
-}
-
-interface changePasswordData {
-    password: string;
-    newPassword: string;
-}
-
-interface DbResult {
-    affectedRows: number;
-    insertId: number;
-    message: string;
-    protocol41: boolean;
-    changedRows: number;
-    fieldCount: number;
-    serverStatus: number;
-    warningCount: number;
-}
+import { UserData, DbResult, changeNameData, changePasswordData } from "../../model/account/accountInterface";
 
 class AccountController {
     constructor () {
@@ -87,14 +57,35 @@ class AccountController {
         // Hash the password
         let password: string = md5(data.password + salt);
         
-        return await account.create([name, email, username, password])
+        // Create user
+        let result = await account.create([name, email, username, password])
         .then((result: DbResult) => {
-            let token = md5(result.insertId + salt);
-            return token;
+            return false;
         })
         .catch(err => {
             throw err;
         });
+
+        // Get user data
+        if (result) {
+            throw result;
+        }
+        else {
+            let userData: UserData = await account.get(username);
+
+            // Create token
+            let token = username + '__'  + md5(userData.id + salt);
+
+            return {
+                token: token,
+                user: {
+                    id: userData.id,
+                    name: userData.name,
+                    username: userData.username,
+                    email: userData.email
+                }
+            };
+        }
     }
 
     public async login (data: UserData) {
