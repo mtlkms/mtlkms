@@ -1,7 +1,7 @@
 import * as md5 from 'md5';
 import account from "../../model/account/account";
 import validator from "../../model/validator";
-import salt from "../../salt";
+import { salt } from "../../pwd";
 import { UserData, DbResult, changeNameData, changePasswordData } from "../../model/account/accountInterface";
 
 class AccountController {
@@ -32,13 +32,17 @@ class AccountController {
             throw new Error("Invalid username");
         }
 
-        return await account.get(username)
-        .then(result => {
-            return result;
-        })
-        .catch(err => {
-            throw err;
-        });
+        let userData: UserData = await account.get(username);
+
+        if (!userData) {
+            throw new Error("Username not found");
+        }
+
+        return {
+            name: userData.name,
+            username: userData.username,
+            email: userData.email
+        };
     }
 
     public async getAll () {

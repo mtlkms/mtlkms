@@ -1,10 +1,10 @@
 import * as mysql from 'mysql';
-import password from './dbpwd';
+import { dbpwd } from './pwd';
 
 const connection = mysql.createPool({
     host: 'localhost',
     user: 'cuikho210',
-    password: password,
+    password: dbpwd,
     database: 'mtlkms'
 });
 
