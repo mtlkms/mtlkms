@@ -1,4 +1,5 @@
 import * as md5 from 'md5';
+import * as fs from 'fs';
 import account from "../../model/account/account";
 import validator from "../../model/validator";
 import { salt } from "../../pwd";
@@ -25,6 +26,27 @@ class AccountController {
     private matchToken (token: string, userData: UserData) : boolean {
         let userToken = this.genToken(userData.username, userData.id);
         return token === userToken;
+    }
+
+    private createAvatar (username: string) : boolean {
+        // Check if user directory exists
+        let userDir = './assets/users/' + username;
+
+        if (!fs.existsSync(userDir)) {
+            fs.mkdirSync(userDir);
+        }
+        
+        // Check if avatar exists
+        let avatarPath = userDir + '/avatar.png';
+        if (fs.existsSync(avatarPath)) {
+            return false;
+        }
+        
+        // Copy avatar
+        let avatar = './assets/avatar.png';
+        fs.copyFileSync(avatar, avatarPath);
+
+        return true;
     }
 
     public async get (username: string) {
@@ -75,9 +97,16 @@ class AccountController {
         let name: string = validator.htmlEncode(data.name);
         let email: string = validator.htmlEncode(data.email);
         let username: string = validator.htmlEncode(data.username);
-
+        
         // Hash the password
         let password: string = this.hashPassword(data.password);
+
+        // Create avatar
+        let isAvatarCreated = this.createAvatar(username);
+
+        if (!isAvatarCreated) {
+            console.log("Avatar already exists");
+        }
         
         // Create user
         let result = await account.create([name, email, username, password])
@@ -88,25 +117,24 @@ class AccountController {
             throw err;
         });
 
-        // Get user data
         if (result) {
             throw result;
         }
-        else {
-            let userData: UserData = await account.get(username);
 
-            // Create token
-            let token: string = this.genToken(username, userData.id);
+        // Get user data
+        let userData: UserData = await account.get(username);
 
-            return {
-                token: token,
-                user: {
-                    name: userData.name,
-                    username: userData.username,
-                    email: userData.email
-                }
-            };
-        }
+        // Create token
+        let token: string = this.genToken(username, userData.id);
+
+        return {
+            token: token,
+            user: {
+                name: userData.name,
+                username: userData.username,
+                email: userData.email
+            }
+        };
     }
 
     public async login (data: UserData) {

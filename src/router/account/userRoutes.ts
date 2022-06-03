@@ -37,6 +37,11 @@ router.get('/', (req, res) => {
     });
 });
 
+// Get user avatar
+router.get('/:username/avatar', (req, res) => {
+    res.sendFile('./assets/users/' + req.params.username + '/avatar.png');
+});
+
 // Change name
 router.put('/:username', (req, res, next) => {
     accountController.changeName(req.params.username, req.body)
