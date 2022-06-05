@@ -7,6 +7,8 @@ import LoginView from '../views/accounts/LoginView.vue'
 import RegisterView from '../views/accounts/RegisterView.vue'
 import LogoutView from '../views/accounts/LogoutView.vue'
 
+import ProfileView from '../views/accounts/ProfileView.vue'
+
 const routes = [
   {
     path: '/',
@@ -41,6 +43,24 @@ const routes = [
     component: LogoutView,
     meta: {
       title: 'Đăng Xuất - MTLKMS'
+    }
+  },
+
+  {
+    path: '/profile',
+    name: 'profile',
+    component: ProfileView,
+    meta: {
+      title: 'Thông Tin Cá Nhân - MTLKMS'
+    }
+  },
+
+  {
+    path: '/profile/edit',
+    name: 'profile-edit',
+    component: LogoutView,
+    meta: {
+      title: 'Chỉnh Sửa Thông Tin Cá Nhân - MTLKMS'
     }
   }
 ]

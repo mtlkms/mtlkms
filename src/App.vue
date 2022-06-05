@@ -390,7 +390,7 @@ input {
 }
 
 .container-md {
-  max-width: 720px;
+  max-width: 960px;
 }
 
 .avatar {
@@ -402,6 +402,12 @@ input {
 .avatar-lg {
   width: 150px;
   height: 150px;
+  border-radius: 50%;
+}
+
+.avatar-xl {
+  width: 250px;
+  height: 250px;
   border-radius: 50%;
 }
 
@@ -418,6 +424,14 @@ input {
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
 }
 
 </style>

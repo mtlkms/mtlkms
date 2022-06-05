@@ -3,7 +3,8 @@ let data = {
     user: {
         name: '',
         email: '',
-        username: ''
+        username: '',
+        slogan: ''
     }
 };
 

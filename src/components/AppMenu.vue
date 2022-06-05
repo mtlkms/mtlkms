@@ -45,6 +45,12 @@ export default {
                     auth: true
                 },
                 {
+                    name: 'Cá Nhân',
+                    path: '/profile',
+                    icon: 'person',
+                    auth: true
+                },
+                {
                     name: 'Đăng Nhập',
                     path: '/login',
                     icon: 'login',
