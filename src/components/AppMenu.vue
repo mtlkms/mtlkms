@@ -34,9 +34,10 @@ import store from '/src/assets/js/store'
 export default {
     name: 'AppMenu',
 
-    data() {
+    data () {
         return {
             data: store.getAll(),
+
             links: [
                 {
                     name: 'Trang Chủ',
@@ -74,7 +75,7 @@ export default {
 
     methods: {
         isActive(link) {
-            return link.path == this.$route.path;
+            return link.path == this.$route.path
         }
     },
 }

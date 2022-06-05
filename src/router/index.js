@@ -8,6 +8,7 @@ import RegisterView from '../views/accounts/RegisterView.vue'
 import LogoutView from '../views/accounts/LogoutView.vue'
 
 import ProfileView from '../views/accounts/ProfileView.vue'
+import EditProfileView from '../views/accounts/EditProfileView.vue'
 
 const routes = [
   {
@@ -57,8 +58,8 @@ const routes = [
 
   {
     path: '/profile/edit',
-    name: 'profile-edit',
-    component: LogoutView,
+    name: 'edit-profile',
+    component: EditProfileView,
     meta: {
       title: 'Chỉnh Sửa Thông Tin Cá Nhân - MTLKMS'
     }

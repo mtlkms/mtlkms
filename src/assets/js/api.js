@@ -11,6 +11,10 @@ class API {
         })
     }
 
+    getAvatarURL (username) {
+        return this.host + '/user/' + username + '/avatar'
+    }
+
     post (url, data) {
         return fetch(this.host + url, {
             method: 'POST',

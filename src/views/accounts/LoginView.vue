@@ -60,7 +60,7 @@ export default {
     name: 'LoginView',
 
     created () {
-        this.checkLogin();
+        this.checkLogin()
     },
 
     data () {
@@ -108,10 +108,19 @@ export default {
             else this.log = 'Đã có lỗi xảy ra'
         },
 
+        redirect () {
+            if (store.get('redirect')) {
+                this.$router.push(store.get('redirect'))
+                store.set('redirect', null)
+            }
+            else {
+                this.$router.push('/')
+            }
+        },
+
         checkLogin () {
             if (store.get('isLogin')) {
-                this.$router.push('/')
-                return
+                this.redirect()
             }
 
             api.get('/check-login')
@@ -120,7 +129,7 @@ export default {
                     res.json().then(data => {
                         store.set('user', data.user)
                         store.set('isLogin', true)
-                        this.$router.push('/')
+                        this.redirect()
                     })
                 }
             })
@@ -128,6 +137,6 @@ export default {
                 console.log(err)
             })
         }
-    },
+    }
 }
 </script>

@@ -25,7 +25,8 @@
 
 <script>
 import AppMenu from './components/AppMenu.vue'
-import store from '/src/assets/js/store'
+import store from '@/assets/js/store'
+
 
 export default {
   name: 'App',
@@ -36,6 +37,7 @@ export default {
 
   created () {
     if (!this.data.isLogin) {
+      store.set('redirect', location.pathname)
       this.$router.push('/login')
     }
 
@@ -53,7 +55,7 @@ export default {
     
   },
 
-  data() {
+  data () {
     return {
       isMenuOpen: false,
       data: store.getAll()
@@ -76,10 +78,9 @@ export default {
   },
 
   methods: {
-    toggleMenu() {
+    toggleMenu () {
       this.isMenuOpen = !this.isMenuOpen
     }
-    
   }
 }
 </script>
@@ -167,7 +168,7 @@ input {
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
   display: flex;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
   z-index: 20;
 }

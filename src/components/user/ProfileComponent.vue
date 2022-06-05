@@ -1,12 +1,12 @@
 <template>
 <div class="main">
-    <img :src="getAvatarURL()" :alt="data.user.username" class="avatar-lg">
+    <img :src="api.getAvatarURL(data.user.username)" :alt="data.user.username" class="avatar-lg">
 
     <div>
         <p><b>{{ data.user.name }}</b></p>
         <p>{{ data.user.username }}</p>
         <p>{{ data.user.slogan }}</p>
-        <router-link to="/profile/edit">[Edit]</router-link>
+        <p><router-link to="/profile/edit">[Edit]</router-link></p>
     </div>
 </div>
 </template>
@@ -20,13 +20,8 @@ export default {
 
     data () {
         return {
-            data: store.getAll()
-        }
-    },
-
-    methods: {
-        getAvatarURL () {
-            return api.host + '/user/' + this.data.user.username + '/avatar'
+            data: store.getAll(),
+            api: api
         }
     }
 }
