@@ -5,6 +5,7 @@ export interface UserData {
     email: string;
     id: number;
     forget_pwd: string;
+    slogan: string;
     created_at: string;
 }
 

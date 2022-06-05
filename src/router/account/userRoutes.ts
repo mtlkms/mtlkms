@@ -1,4 +1,5 @@
 import * as express from 'express';
+import * as path from 'path';
 import accountController from '../../controller/accountController/accountController';
 
 const router = express.Router();
@@ -39,7 +40,7 @@ router.get('/', (req, res) => {
 
 // Get user avatar
 router.get('/:username/avatar', (req, res) => {
-    res.sendFile('./assets/users/' + req.params.username + '/avatar.png');
+    res.sendFile(path.resolve(__dirname, '../../../assets/users/' + req.params.username + '/avatar.png'));
 });
 
 // Change name

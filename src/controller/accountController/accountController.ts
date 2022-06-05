@@ -132,7 +132,8 @@ class AccountController {
             user: {
                 name: userData.name,
                 username: userData.username,
-                email: userData.email
+                email: userData.email,
+                slogan: userData.slogan
             }
         };
     }
@@ -173,7 +174,8 @@ class AccountController {
                 user: {
                     name: userData.name,
                     username: userData.username,
-                    email: userData.email
+                    email: userData.email,
+                    slogan: userData.slogan
                 }
             };
         }
@@ -195,7 +197,8 @@ class AccountController {
         return {
             name: userData.name,
             username: userData.username,
-            email: userData.email
+            email: userData.email,
+            slogan: userData.slogan
         };
     }
 
