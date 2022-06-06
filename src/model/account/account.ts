@@ -54,9 +54,9 @@ class Account {
         });
     }
 
-    public changeName(data: Array<string>) {
+    public updateUserInfo(data: Array<string>) {
         return new Promise((resolve, reject) => {
-            db.query('UPDATE users SET name=? WHERE username=? AND password=?', data, (err, result) => {
+            db.query('UPDATE users SET name=?, slogan=? WHERE id=?', data, (err, result) => {
                 if (err) {
                     reject(err);
                 } else {

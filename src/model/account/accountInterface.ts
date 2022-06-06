@@ -9,16 +9,6 @@ export interface UserData {
     created_at: string;
 }
 
-export interface changeNameData {
-    name: string;
-    password: string;
-}
-
-export interface changePasswordData {
-    password: string;
-    newPassword: string;
-}
-
 export interface DbResult {
     affectedRows: number;
     insertId: number;

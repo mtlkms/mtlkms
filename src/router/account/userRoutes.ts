@@ -44,13 +44,13 @@ router.get('/:username/avatar', (req, res) => {
     res.sendFile(path.resolve(__dirname, '../../../assets/users/' + req.params.username + '/avatar.png'));
 });
 
-// Change name
-router.put('/:username', (req, res, next) => {
-    accountController.changeName(req.params.username, req.body)
+// Update User Info
+router.put('/', (req, res, next) => {
+    accountController.updateUserInfo(req.cookies.token, req.body)
     .then(result => {
         res.json({
             success: true,
-            result
+            user: result
         });
     })
     .catch(err => {
@@ -88,7 +88,7 @@ router.put('/:username/avatar', (req, res, next) => {
     }
     else {
         accountController.updateAvatar(req, res, req.cookies.token)
-        .then(result => {
+        .then(() => {
             res.json({
                 success: true
             });
