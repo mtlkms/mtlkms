@@ -23,11 +23,14 @@
         </label>
 
         <div class="footer">
-            <button class="btn btn-primary">Đăng nhập</button>
+            <button class="btn btn-primary">
+                <span class="material-icons mr-2">login</span>
+                Đăng nhập
+            </button>
 
             <div>
-                <p>Chưa có tài khoản? <a href="/register">[Đăng Ký]</a></p>
-                <p><a href="">[Quên Mật Khẩu]</a></p>
+                <p>Chưa có tài khoản? <router-link to="/register">[Đăng Ký]</router-link></p>
+                <p><router-link to="">[Quên Mật Khẩu]</router-link></p>
             </div>
         </div>
     </form>
@@ -79,7 +82,6 @@ export default {
         submitForm() {
             api.post('/login', this.form)
             .then(res => {
-                console.log(res)
                 if (res.status === 200) {
                     res.json().then(data => {
                         this.isSuccess = true
@@ -87,6 +89,7 @@ export default {
                         this.log = "Đăng ký thành công"
                         store.set('user', data.user)
                         store.set('isLogin', true)
+                        api.setAvatarURL()
                         this.$router.push('/')
                     })
                 }
@@ -109,7 +112,7 @@ export default {
         },
 
         redirect () {
-            if (store.get('redirect')) {
+            if (store.get('redirect') && store.get('redirect') != '/login' && store.get('redirect') != '/register') {
                 this.$router.push(store.get('redirect'))
                 store.set('redirect', null)
             }
@@ -129,6 +132,7 @@ export default {
                     res.json().then(data => {
                         store.set('user', data.user)
                         store.set('isLogin', true)
+                        api.setAvatarURL()
                         this.redirect()
                     })
                 }

@@ -1,6 +1,6 @@
 <template>
 <div class="main">
-    <img :src="api.getAvatarURL(data.user.username)" :alt="data.user.username" class="avatar-lg">
+    <img :src="data.avatarURL" :alt="data.user.username" class="avatar-lg">
 
     <div>
         <p><b>{{ data.user.name }}</b></p>

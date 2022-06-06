@@ -36,7 +36,7 @@ export default {
   },
 
   created () {
-    if (!this.data.isLogin) {
+    if (!this.data.isLogin && location.pathname !== '/login' && location.pathname !== '/register') {
       store.set('redirect', location.pathname)
       this.$router.push('/login')
     }
@@ -126,6 +126,11 @@ body {
 
 input {
   font-family: 'Mali', sans-serif;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #eee;
 }
 
 /* --------------------------------------------------- */
@@ -330,7 +335,9 @@ input {
 
 .btn {
   position: relative;
-  display: inline-block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding: .75rem 1.75rem;
   margin: 1rem 0;
   border: none;
@@ -425,6 +432,38 @@ input {
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
+}
+
+.mr-1 {
+  margin-right: .25rem;
+}
+
+.mr-2 {
+  margin-right: .5rem;
+}
+
+.mr-3 {
+  margin-right: 1rem;
+}
+
+.mr-4 {
+  margin-right: 2rem;
+}
+
+.ml-1 {
+  margin-left: .25rem;
+}
+
+.ml-2 {
+  margin-left: .5rem;
+}
+
+.ml-3 {
+  margin-left: 1rem;
+}
+
+.ml-4 {
+  margin-left: 2rem;
 }
 
 .text-center {
