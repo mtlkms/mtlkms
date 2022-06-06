@@ -76,7 +76,22 @@ export default {
         },
 
         updateProfile () {
-            
+            api.put('/user', this.form)
+            .then(res => {
+                if (res.status == 200) {
+                    res.json().then(data => {
+                        store.set('user', data.user)
+                    })
+                }
+                else {
+                    res.json().then(data => {
+                        console.log(data.error)
+                    })
+                }
+            })
+            .catch(err => {
+                console.log(err)
+            })
         },
 
         onchangeAvatar (e) {
