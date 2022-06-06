@@ -25,7 +25,8 @@
 
 <script>
 import AppMenu from './components/AppMenu.vue'
-import store from '/src/assets/js/store'
+import store from '@/assets/js/store'
+
 
 export default {
   name: 'App',
@@ -35,7 +36,8 @@ export default {
   },
 
   created () {
-    if (!this.data.isLogin) {
+    if (!this.data.isLogin && location.pathname !== '/login' && location.pathname !== '/register') {
+      store.set('redirect', location.pathname)
       this.$router.push('/login')
     }
 
@@ -53,7 +55,7 @@ export default {
     
   },
 
-  data() {
+  data () {
     return {
       isMenuOpen: false,
       data: store.getAll()
@@ -76,10 +78,9 @@ export default {
   },
 
   methods: {
-    toggleMenu() {
+    toggleMenu () {
       this.isMenuOpen = !this.isMenuOpen
     }
-    
   }
 }
 </script>
@@ -127,6 +128,11 @@ input {
   font-family: 'Mali', sans-serif;
 }
 
+hr {
+  border: none;
+  border-top: 1px solid #eee;
+}
+
 /* --------------------------------------------------- */
 /* Layout                                              */
 /* --------------------------------------------------- */
@@ -167,7 +173,7 @@ input {
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
   display: flex;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
   z-index: 20;
 }
@@ -329,7 +335,9 @@ input {
 
 .btn {
   position: relative;
-  display: inline-block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding: .75rem 1.75rem;
   margin: 1rem 0;
   border: none;
@@ -390,7 +398,7 @@ input {
 }
 
 .container-md {
-  max-width: 720px;
+  max-width: 960px;
 }
 
 .avatar {
@@ -402,6 +410,12 @@ input {
 .avatar-lg {
   width: 150px;
   height: 150px;
+  border-radius: 50%;
+}
+
+.avatar-xl {
+  width: 250px;
+  height: 250px;
   border-radius: 50%;
 }
 
@@ -418,6 +432,46 @@ input {
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
+}
+
+.mr-1 {
+  margin-right: .25rem;
+}
+
+.mr-2 {
+  margin-right: .5rem;
+}
+
+.mr-3 {
+  margin-right: 1rem;
+}
+
+.mr-4 {
+  margin-right: 2rem;
+}
+
+.ml-1 {
+  margin-left: .25rem;
+}
+
+.ml-2 {
+  margin-left: .5rem;
+}
+
+.ml-3 {
+  margin-left: 1rem;
+}
+
+.ml-4 {
+  margin-left: 2rem;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
 }
 
 </style>

@@ -11,7 +11,7 @@
         </transition>
 
         <label class="input">
-            <span class="material-icons">tag</span>
+            <span class="material-icons">label</span>
             <input type="text" name="name" required placeholder="Tên hiển thị" v-model="form.name">
             <p>Tên hiển thị</p>
         </label>
@@ -41,11 +41,14 @@
         </label>
 
         <div class="footer">
-            <button class="btn btn-primary">Đăng ký</button>
+            <button class="btn btn-primary">
+                <span class="material-icons mr-2">send</span>
+                Đăng ký
+            </button>
 
             <div>
-                <p>Đã có tài khoản? <a href="/login">[Đăng Nhập]</a></p>
-                <p><a href="">[Quên Mật Khẩu]</a></p>
+                <p>Đã có tài khoản? <router-link to="/login">[Đăng Nhập]</router-link></p>
+                <p><router-link to="">[Quên Mật Khẩu]</router-link></p>
             </div>
         </div>
     </form>
@@ -109,6 +112,7 @@ export default {
                         this.log = "Đăng ký thành công"
                         store.set('user', data.user)
                         store.set('isLogin', true)
+                        api.setAvatarURL()
                         this.$router.push('/')
                     })
                 }

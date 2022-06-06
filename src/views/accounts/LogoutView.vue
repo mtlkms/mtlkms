@@ -4,13 +4,16 @@
 
     <p>Bạn có chắc muốn đăng xuất không?</p>
 
-    <button class="btn btn-primary" @click="logout">Đăng xuất</button>
+    <button class="btn btn-primary" @click="logout">
+        <span class="material-icons mr-2">logout</span>
+        Đăng xuất
+    </button>
 </div>
 </template>
 
 <script>
-import store from '/src/assets/js/store'
-import api from '/src/assets/js/api'
+import store from '@/assets/js/store'
+import api from '@/assets/js/api'
 
 export default {
     name: 'LogoutView',
@@ -18,10 +21,10 @@ export default {
     methods: {
         logout() {
             api.get('/logout').then(() => {
-                store.set('isLogin', false);
-                store.set('user', {});
-                this.$router.push('/login');
-            });
+                store.set('isLogin', false)
+                store.set('user', {})
+                this.$router.push('/login')
+            })
         }
     }
 }

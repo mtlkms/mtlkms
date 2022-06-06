@@ -8,7 +8,7 @@
             <p>Học hành chăm chỉ :(</p>
         </div>
         <div v-else>
-            <img src="/img/icons/180.png" class="avatar d-block mx-auto">
+            <img :src="data.avatarURL" class="avatar d-block mx-auto">
             <h3>Xin chào {{ data.user.name }}!</h3>
             <hr>
             <p>Hiện bạn chưa học gì!</p>
@@ -34,14 +34,21 @@ import store from '/src/assets/js/store'
 export default {
     name: 'AppMenu',
 
-    data() {
+    data () {
         return {
             data: store.getAll(),
+
             links: [
                 {
                     name: 'Trang Chủ',
                     path: '/',
                     icon: 'home',
+                    auth: true
+                },
+                {
+                    name: 'Cá Nhân',
+                    path: '/profile',
+                    icon: 'person',
                     auth: true
                 },
                 {
@@ -68,7 +75,7 @@ export default {
 
     methods: {
         isActive(link) {
-            return link.path == this.$route.path;
+            return link.path == this.$route.path
         }
     },
 }
@@ -104,11 +111,6 @@ export default {
 .active {
     background-color: #ff907f !important;
     color: #fff !important;
-}
-
-hr {
-    border: none;
-    border-top: 1px solid #eee;
 }
 
 #appmenu-top {
