@@ -1,5 +1,6 @@
 import * as md5 from 'md5';
 import * as fs from 'fs';
+import * as multer from 'multer';
 import account from "../../model/account/account";
 import validator from "../../model/validator";
 import { salt } from "../../pwd";
@@ -26,6 +27,22 @@ class AccountController {
     private matchToken (token: string, userData: UserData) : boolean {
         let userToken = this.genToken(userData.username, userData.id);
         return token === userToken;
+    }
+
+    private async getUserDataFromToken (token: string) : Promise<UserData> {
+        let username: string = this.getUsernameFromToken(token);
+
+        let userData: UserData = await account.get(username);
+
+        if (!userData) {
+            throw new Error("Invalid token");
+        }
+
+        if (!this.matchToken(token, userData)) {
+            throw new Error("Invalid token");
+        }
+
+        return userData;
     }
 
     private createAvatar (username: string) : boolean {
@@ -182,17 +199,7 @@ class AccountController {
     }
 
     public async checkLogin (token: string) {
-        let username: string = this.getUsernameFromToken(token);
-
-        let userData = await account.get(username);
-
-        if (!userData) {
-            throw new Error("Invalid token");
-        }
-
-        if (!this.matchToken(token, userData)) {
-            throw new Error("Invalid token");
-        }
+        let userData: UserData = await this.getUserDataFromToken(token);
 
         return {
             name: userData.name,
@@ -256,6 +263,34 @@ class AccountController {
         .catch(err => {
             throw err;
         });
+    }
+
+    public async updateAvatar (req, res, token: string) {
+        let userData: UserData = await this.getUserDataFromToken(token);
+
+        const storage = multer.diskStorage({
+            destination: function (req, file, cb) {
+                cb(null, "./assets/users/" + userData.username);
+            },
+            filename: function (req, file, cb) {
+                cb(null, "avatar.png");
+            }
+        });
+
+        const upload = multer({ storage: storage }).single('avatar');
+
+        await new Promise((resolve, reject) => {
+            upload(req, res, (err) => {
+                if(err) {
+                    reject(err);
+                }
+                else {
+                    resolve(true);
+                }
+            });
+        });
+
+        return true;
     }
 }
 

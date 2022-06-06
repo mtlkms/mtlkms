@@ -40,6 +40,7 @@ router.get('/', (req, res) => {
 
 // Get user avatar
 router.get('/:username/avatar', (req, res) => {
+    res.set('Cache-Control', 'no-store');
     res.sendFile(path.resolve(__dirname, '../../../assets/users/' + req.params.username + '/avatar.png'));
 });
 
@@ -75,6 +76,30 @@ router.put('/:username/password', (req, res, next) => {
             error: err.message
         });
     });
+});
+
+// Update avatar
+router.put('/:username/avatar', (req, res, next) => {
+    if (!req.cookies.token) {
+        res.status(400).json({
+            success: false,
+            error: 'Not logged in yet'
+        });
+    }
+    else {
+        accountController.updateAvatar(req, res, req.cookies.token)
+        .then(result => {
+            res.json({
+                success: true
+            });
+        })
+        .catch(err => {
+            res.status(400).json({
+                success: false,
+                error: err.message
+            });
+        });
+    }
 });
 
 export default router;
