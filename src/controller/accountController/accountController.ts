@@ -4,7 +4,7 @@ import * as multer from 'multer';
 import account from "../../model/account/account";
 import validator from "../../model/validator";
 import { salt } from "../../pwd";
-import { UserData, DbResult } from "../../model/account/accountInterface";
+import { UserData, DbResult, ChangePasswordData } from "../../model/account/accountInterface";
 
 class AccountController {
     constructor () {
@@ -17,6 +17,11 @@ class AccountController {
 
     private hashPassword (password: string) : string {
         return md5(password + salt);
+    }
+
+    private matchPassword (password: string, hash: string) : boolean {
+        let hashedPassword: string = this.hashPassword(password);
+        return hashedPassword === hash;
     }
 
     private getUsernameFromToken (token: string) : string {
@@ -236,8 +241,30 @@ class AccountController {
         }
     }
 
-    public async changePassword (username: string, data: UserData) {
+    public async changePassword (token: string, data: ChangePasswordData) {
+        if (!data.oldPassword || !data.newPassword) {
+            throw new Error("Invalid data");
+        }
+
+        if (!validator.isValidPassword(data.newPassword)) {
+            throw new Error("Invalid password");
+        }
         
+        let userData: UserData = await this.getUserDataFromToken(token);
+
+        if (!this.matchPassword(data.oldPassword, userData.password)) {
+            throw new Error("Old password is incorrect");
+        }
+
+        let newPassword: string = this.hashPassword(data.newPassword);
+
+        let result: DbResult = await account.changePassword([newPassword, String(userData.id)]);
+
+        if (!result || result.affectedRows == 0) {
+            throw new Error("Update failed");
+        }
+
+        return true;
     }
 
     public async updateAvatar (req, res, token: string) {

@@ -66,9 +66,9 @@ class Account {
         });
     }
 
-    public changePassword(data: Array<string>) {
+    public changePassword(data: Array<string>) : Promise<DbResult> {
         return new Promise((resolve, reject) => {
-            db.query('UPDATE users SET password=? WHERE username=? AND password=?', data, (err, result) => {
+            db.query('UPDATE users SET password=? WHERE id=?', data, (err, result) => {
                 if (err) {
                     reject(err);
                 } else {

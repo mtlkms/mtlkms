@@ -19,3 +19,8 @@ export interface DbResult {
     serverStatus: number;
     warningCount: number;
 }
+
+export interface ChangePasswordData {
+    oldPassword: string;
+    newPassword: string;
+}

@@ -62,12 +62,11 @@ router.put('/', (req, res, next) => {
 });
 
 // Change password
-router.put('/:username/password', (req, res, next) => {
-    accountController.changePassword(req.params.username, req.body)
-    .then(result => {
+router.put('/password', (req, res, next) => {
+    accountController.changePassword(req.cookies.token, req.body)
+    .then(() => {
         res.json({
-            success: true,
-            result
+            success: true
         });
     })
     .catch(err => {
