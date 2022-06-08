@@ -222,10 +222,10 @@ class AccountController {
 
         let userData: UserData = await this.getUserDataFromToken(token);
 
-        let result: DbResult = await account.updateUserInfo([name, slogan, String(userData.id)])
+        let result: DbResult = await account.updateUserInfo([name, slogan, String(userData.id)]);
 
-        if (result && result.affectedRows != 0) {
-
+        if (!result || result.affectedRows == 0) {
+            throw new Error("Update failed");
         }
 
         return {
