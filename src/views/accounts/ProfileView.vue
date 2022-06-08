@@ -1,6 +1,7 @@
 <template>
 <div class="container container-md">
     <Profile />
+    <hr>
     
 </div>
 </template>

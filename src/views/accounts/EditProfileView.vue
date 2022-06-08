@@ -37,6 +37,34 @@
             Save
         </button>
     </form>
+    <hr>
+
+    <form action="" @submit.prevent="updatePassword()">
+        <p>Cập nhật mật khẩu</p>
+
+        <label class="input">
+            <span class="material-icons">lock</span>
+            <input type="password" v-model="passwordForm.oldPassword" placeholder="Mật khẩu cũ" />
+            <p>Mật khẩu cũ</p>
+        </label>
+
+        <label class="input">
+            <span class="material-icons">lock</span>
+            <input type="password" v-model="passwordForm.newPassword" placeholder="Mật khẩu mới" />
+            <p>Mật khẩu mới</p>
+        </label>
+
+        <label class="input">
+            <span class="material-icons">lock</span>
+            <input type="password" v-model="rePassword" placeholder="Xác nhận mật khẩu" />
+            <p>Xác nhận mật khẩu</p>
+        </label>
+
+        <button class="btn btn-primary">
+            <span class="material-icons mr-2">save</span>
+            Save
+        </button>
+    </form>
 </div>
 </template>
 
@@ -55,6 +83,13 @@ export default {
                 name: store.get('user').name,
                 slogan: store.get('user').slogan
             },
+
+            passwordForm: {
+                oldPassword: '',
+                newPassword: ''
+            },
+
+            rePassword: '',
 
             avatarPreview: api.getAvatarURL(store.get('user').username),
             avatarFile: null
@@ -81,6 +116,25 @@ export default {
                 if (res.status == 200) {
                     res.json().then(data => {
                         this.data.user = data.user
+                    })
+                }
+                else {
+                    res.json().then(data => {
+                        console.log(data.error)
+                    })
+                }
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        },
+
+        updatePassword () {
+            api.put('/user/password', this.passwordForm)
+            .then(res => {
+                if (res.status == 200) {
+                    res.json().then(data => {
+                        console.log(data.message)
                     })
                 }
                 else {
