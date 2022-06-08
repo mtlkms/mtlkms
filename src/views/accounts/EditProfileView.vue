@@ -80,7 +80,7 @@ export default {
             .then(res => {
                 if (res.status == 200) {
                     res.json().then(data => {
-                        store.set('user', data.user)
+                        this.data.user = data.user
                     })
                 }
                 else {
