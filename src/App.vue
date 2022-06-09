@@ -93,6 +93,10 @@ export default {
 /* Custom                                              */
 /* --------------------------------------------------- */
 
+html {
+  scroll-behavior: smooth;
+}
+
 ::-webkit-scrollbar {
   width: 5px;
 }
