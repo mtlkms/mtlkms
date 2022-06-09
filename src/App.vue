@@ -380,6 +380,11 @@ hr {
   left: 0;
   width: 100%;
 }
+
+.btn:active {
+  top: 1px;
+}
+
 /* --------------------------------------------------- */
 /* Custom class                                        */
 /* --------------------------------------------------- */
@@ -427,6 +432,18 @@ hr {
 
 .d-block {
   display: block;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.justify-content-center {
+  justify-content: center;
+}
+
+.align-items-center {
+  align-items: center;
 }
 
 .mx-auto {

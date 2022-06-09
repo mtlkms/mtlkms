@@ -65,15 +65,26 @@
             Save
         </button>
     </form>
+
+    <message-popup
+    :title="message.title"
+    :message="message.message"
+    :type="message.type"
+    :is-display="message.isDisplay" />
 </div>
 </template>
 
 <script>
 import store from '@/assets/js/store'
 import api from '@/assets/js/api'
+import MessagePopup from '@/components/MessagePopup.vue'
 
 export default {
     name: 'EditProfileView',
+
+    components: {
+        MessagePopup
+    },
 
     data () {
         return {
@@ -92,61 +103,170 @@ export default {
             rePassword: '',
 
             avatarPreview: api.getAvatarURL(store.get('user').username),
-            avatarFile: null
+            avatarFile: null,
+
+            isLoading: false,
+
+            message: {
+                title: '',
+                message: '',
+                type: '',
+                isDisplay: false
+            }
         }
     },
 
     methods : {
         updateAvatar () {
-            if (!this.avatarFile) return
+            if (!this.avatarFile) {
+                this.showMessage(
+                    'Lỗi',
+                    'Vui lòng chọn ảnh đại diện',
+                    'error'
+                )
+
+                return
+            }
 
             let data = new FormData()
             data.append('avatar', this.avatarFile)
 
             api.updateAvatar(data)
-            .then(() => {
-                location.reload()
+            .then(res => {
+                if (res.status == 200) {
+                    location.reload()
+                }
+                else {
+                    this.showMessage(
+                        'Lỗi!',
+                        'Có lỗi xảy ra, vui lòng thử lại',
+                        'error'
+                    )
+                }
             })
             .catch(err => {
                 console.log(err)
+
+                this.showMessage(
+                    'Lỗi!',
+                    'Không thể kết nối đến máy chủ',
+                    'error'
+                )
             })
         },
 
         updateProfile () {
+            if (!this.form.name || !this.form.slogan) {
+                this.showMessage(
+                    'Lỗi',
+                    'Vui lòng nhập đầy đủ thông tin',
+                    'warning'
+                )
+
+                return
+            }
+
             api.put('/user', this.form)
             .then(res => {
                 if (res.status == 200) {
                     res.json().then(data => {
                         this.data.user = data.user
+
+                        this.showMessage(
+                            'Thành công',
+                            'Cập nhật thông tin cá nhân thành công',
+                            'success'
+                        )
                     })
                 }
                 else {
                     res.json().then(data => {
                         console.log(data.error)
+
+                        let msg = ''
+
+                        if (data.error == 'Invalid name') msg = 'Tên hiển thị phải lớn hơn 2 và nhỏ hơn 50 kí tự'
+                        else msg = 'Có lỗi xảy ra, vui lòng thử lại'
+
+                        this.showMessage(
+                            'Lỗi!',
+                            msg,
+                            'error'
+                        )
                     })
                 }
             })
             .catch(err => {
                 console.log(err)
+
+                this.showMessage(
+                    'Lỗi!',
+                    'Không thể kết nối đến máy chủ',
+                    'error'
+                )
             })
         },
 
         updatePassword () {
+            if (!this.passwordForm.oldPassword || !this.passwordForm.newPassword) {
+                this.showMessage(
+                    'Lỗi',
+                    'Vui lòng nhập đầy đủ thông tin',
+                    'warning'
+                )
+
+                return
+            }
+
+            if (this.passwordForm.newPassword != this.rePassword) {
+                this.showMessage(
+                    'Lỗi',
+                    'Mật khẩu mới và xác nhận mật khẩu không khớp',
+                    'warning'
+                )
+
+                return
+            }
+
             api.put('/user/password', this.passwordForm)
             .then(res => {
                 if (res.status == 200) {
-                    res.json().then(data => {
-                        console.log(data.message)
+                    res.json().then(() => {
+                        this.showMessage(
+                            'Thành công',
+                            'Cập nhật mật khẩu thành công',
+                            'success'
+                        )
                     })
+
+                    this.$router.push('/profile')
                 }
                 else {
                     res.json().then(data => {
                         console.log(data.error)
+
+                        let msg = ''
+
+                        if (data.error == 'Invalid password') msg = 'Mật khẩu phải từ 6 kí tự, bao gồm chữ in hoa, chữ in thường, số và kí tự đặc biệt'
+                        else if (data.error == 'Old password is incorrect') msg = 'Mật khẩu cũ không chính xác'
+                        else msg = 'Có lỗi xảy ra, vui lòng thử lại'
+
+                        this.showMessage(
+                            'Lỗi!',
+                            msg,
+                            'error'
+                        )
                     })
                 }
             })
             .catch(err => {
                 console.log(err)
+
+                this.showMessage(
+                    'Lỗi!',
+                    'Không thể kết nối đến máy chủ',
+                    'error'
+                )
             })
         },
 
@@ -194,11 +314,14 @@ export default {
                     })
                 })
             }
+        },
+
+        showMessage (title, message, type) {
+            this.message.title = title
+            this.message.message = message
+            this.message.type = type
+            this.message.isDisplay = !this.message.isDisplay
         }
     }
 }
 </script>
-
-<style scoped>
-
-</style>

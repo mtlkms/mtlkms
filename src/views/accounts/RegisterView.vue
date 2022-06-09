@@ -130,7 +130,7 @@ export default {
         },
 
         showLog () {
-            if (this.apiLog == 'Invalid name') this.log = 'Tên phải lớn hơn 3 và nhỏ hơn 50 kí tự'
+            if (this.apiLog == 'Invalid name') this.log = 'Tên phải lớn hơn 2 và nhỏ hơn 50 kí tự'
             else if (this.apiLog == 'Invalid email') this.log = 'Email không đúng định dạng'
             else if (this.apiLog == 'Invalid username') this.log = 'Tên đăng nhập phải từ 3 đến 20 kí tự, không bao gồm khoảng trống và kí tự đặc biệt'
             else if (this.apiLog == 'Invalid password') this.log = 'Mật khẩu phải lớn hơn 6 kí tự, bao gồm chữ cái viết thường, viết hoa, số và kí tự đặc biệt'
