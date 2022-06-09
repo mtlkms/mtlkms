@@ -21,18 +21,21 @@
       </Transition>
     </router-view>
   </div>
+
+  <LoadingEffect />
 </template>
 
 <script>
 import AppMenu from './components/AppMenu.vue'
+import LoadingEffect from '@/components/LoadingEffect.vue'
 import store from '@/assets/js/store'
-
 
 export default {
   name: 'App',
 
   components: {
-    AppMenu
+    AppMenu,
+    LoadingEffect
   },
 
   created () {
