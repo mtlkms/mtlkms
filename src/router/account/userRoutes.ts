@@ -40,7 +40,7 @@ router.get('/', (req, res) => {
 
 // Get user avatar
 router.get('/:username/avatar', (req, res) => {
-    res.set('Cache-Control', 'no-store');
+    res.set('Cache-Control', 'no-cache');
     res.sendFile(path.resolve(__dirname, '../../../assets/users/' + req.params.username + '/avatar.png'));
 });
 

@@ -71,7 +71,7 @@ class AccountController {
         return true;
     }
 
-    public async get (username: string) {
+    public async get (username: string) : Promise<UserData> {
         if (!validator.isValidUsername(username)) {
             throw new Error("Invalid username");
         }
@@ -85,7 +85,13 @@ class AccountController {
         return {
             name: userData.name,
             username: userData.username,
-            email: userData.email
+            email: userData.email,
+            update_avatar_at: userData.update_avatar_at,
+            id: userData.id,
+            slogan: userData.slogan,
+            created_at: userData.created_at,
+            password: '',
+            forget_pwd: ''
         };
     }
 
@@ -116,9 +122,9 @@ class AccountController {
             throw new Error("Invalid password");
         }
         
-        let name: string = validator.htmlEncode(data.name);
-        let email: string = validator.htmlEncode(data.email);
-        let username: string = validator.htmlEncode(data.username);
+        let name: string = data.name;
+        let email: string = data.email;
+        let username: string = data.username;
         
         // Hash the password
         let password: string = this.hashPassword(data.password);
@@ -132,7 +138,7 @@ class AccountController {
         
         // Create user
         let result = await account.create([name, email, username, password])
-        .then((result: DbResult) => {
+        .then(() => {
             return false;
         })
         .catch(err => {
@@ -222,8 +228,8 @@ class AccountController {
             throw new Error("Invalid name");
         }
 
-        let name: string = validator.htmlEncode(data.name);
-        let slogan: string = validator.htmlEncode(data.slogan);
+        let name: string = data.name;
+        let slogan: string = data.slogan;
 
         let userData: UserData = await this.getUserDataFromToken(token);
 
