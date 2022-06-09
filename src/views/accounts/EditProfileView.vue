@@ -98,6 +98,8 @@ export default {
 
     methods : {
         updateAvatar () {
+            if (!this.avatarFile) return
+
             let data = new FormData()
             data.append('avatar', this.avatarFile)
 
