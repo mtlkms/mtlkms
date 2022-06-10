@@ -1,5 +1,10 @@
 <template>
 <div class="container container-sm">
+    <div class="breadcrumb">
+        <router-link to="/profile">Cá Nhân</router-link>
+        <router-link to="/profile/edit">Sửa Thông Tin Cá Nhân</router-link>
+    </div>
+
     <form action="" @submit.prevent="updateAvatar()">
         <img :src="avatarPreview" :alt="data.user.username" class="d-block mx-auto avatar-xl" />
         <br>

@@ -393,6 +393,43 @@ hr {
 }
 
 /* --------------------------------------------------- */
+/* Breadcrumb                                          */
+/* --------------------------------------------------- */
+
+.breadcrumb {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: .75rem 1.75rem;
+  border-radius: .25rem;
+  /* background-color: #ff907f10; */
+  border-bottom: 1px solid #eee;
+  margin-bottom: 3rem;
+}
+
+.breadcrumb a {
+  text-decoration: none !important;
+  padding-left: .5rem;
+}
+
+.breadcrumb a::after {
+  content: ' / ';
+  padding: .5rem;
+}
+
+.breadcrumb a:first-child {
+  padding-left: 0;
+}
+
+.breadcrumb a:last-child::after {
+  content: '';
+}
+
+.breadcrumb a:last-child {
+  color: #e6705d;
+}
+
+/* --------------------------------------------------- */
 /* Custom class                                        */
 /* --------------------------------------------------- */
 
