@@ -7,16 +7,7 @@ export interface UserData {
     forget_pwd: string;
     slogan: string;
     created_at: string;
-}
-
-export interface changeNameData {
-    name: string;
-    password: string;
-}
-
-export interface changePasswordData {
-    password: string;
-    newPassword: string;
+    update_avatar_at: number;
 }
 
 export interface DbResult {
@@ -28,4 +19,9 @@ export interface DbResult {
     fieldCount: number;
     serverStatus: number;
     warningCount: number;
+}
+
+export interface ChangePasswordData {
+    oldPassword: string;
+    newPassword: string;
 }

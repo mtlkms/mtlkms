@@ -1,5 +1,5 @@
 import db from '../../dbconnection';
-import { UserData } from './accountInterface';
+import { DbResult, UserData } from './accountInterface';
 
 class Account {
     constructor () {
@@ -54,9 +54,9 @@ class Account {
         });
     }
 
-    public changeName(data: Array<string>) {
+    public updateUserInfo(data: Array<string>) : Promise<DbResult> {
         return new Promise((resolve, reject) => {
-            db.query('UPDATE users SET name=? WHERE username=? AND password=?', data, (err, result) => {
+            db.query('UPDATE users SET name=?, slogan=? WHERE id=?', data, (err, result) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -66,9 +66,9 @@ class Account {
         });
     }
 
-    public changePassword(data: Array<string>) {
+    public changePassword(data: Array<string>) : Promise<DbResult> {
         return new Promise((resolve, reject) => {
-            db.query('UPDATE users SET password=? WHERE username=? AND password=?', data, (err, result) => {
+            db.query('UPDATE users SET password=? WHERE id=?', data, (err, result) => {
                 if (err) {
                     reject(err);
                 } else {

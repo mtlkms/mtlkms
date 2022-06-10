@@ -4,7 +4,7 @@ import * as multer from 'multer';
 import account from "../../model/account/account";
 import validator from "../../model/validator";
 import { salt } from "../../pwd";
-import { UserData, DbResult, changeNameData, changePasswordData } from "../../model/account/accountInterface";
+import { UserData, DbResult, ChangePasswordData } from "../../model/account/accountInterface";
 
 class AccountController {
     constructor () {
@@ -17,6 +17,11 @@ class AccountController {
 
     private hashPassword (password: string) : string {
         return md5(password + salt);
+    }
+
+    private matchPassword (password: string, hash: string) : boolean {
+        let hashedPassword: string = this.hashPassword(password);
+        return hashedPassword === hash;
     }
 
     private getUsernameFromToken (token: string) : string {
@@ -66,7 +71,7 @@ class AccountController {
         return true;
     }
 
-    public async get (username: string) {
+    public async get (username: string) : Promise<UserData> {
         if (!validator.isValidUsername(username)) {
             throw new Error("Invalid username");
         }
@@ -80,7 +85,13 @@ class AccountController {
         return {
             name: userData.name,
             username: userData.username,
-            email: userData.email
+            email: userData.email,
+            update_avatar_at: userData.update_avatar_at,
+            id: userData.id,
+            slogan: userData.slogan,
+            created_at: userData.created_at,
+            password: '',
+            forget_pwd: ''
         };
     }
 
@@ -111,9 +122,9 @@ class AccountController {
             throw new Error("Invalid password");
         }
         
-        let name: string = validator.htmlEncode(data.name);
-        let email: string = validator.htmlEncode(data.email);
-        let username: string = validator.htmlEncode(data.username);
+        let name: string = data.name;
+        let email: string = data.email;
+        let username: string = data.username;
         
         // Hash the password
         let password: string = this.hashPassword(data.password);
@@ -127,7 +138,7 @@ class AccountController {
         
         // Create user
         let result = await account.create([name, email, username, password])
-        .then((result: DbResult) => {
+        .then(() => {
             return false;
         })
         .catch(err => {
@@ -209,60 +220,57 @@ class AccountController {
         };
     }
 
-    public async changeName (username: string, data: changeNameData) {
-        if (!data.name || !data.password) {
+    public async updateUserInfo (token: string, data: UserData) {
+        if (!data.name || !data.slogan) {
             throw new Error("Invalid data");
         }
         else if (!validator.isValidName(data.name)) {
             throw new Error("Invalid name");
         }
-        else if (!validator.isValidUsername(username)) {
-            throw new Error("Invalid username");
+
+        let name: string = data.name;
+        let slogan: string = data.slogan;
+
+        let userData: UserData = await this.getUserDataFromToken(token);
+
+        let result: DbResult = await account.updateUserInfo([name, slogan, String(userData.id)]);
+
+        if (!result || result.affectedRows == 0) {
+            throw new Error("Update failed");
         }
 
-        let name: string = validator.htmlEncode(data.name);
-        let hash: string = md5(data.password + salt);
-
-        return await account.changeName([name, username, hash])
-        .then((result: DbResult) => {
-            if (result.affectedRows === 0) {
-                throw new Error("Username not found or password is incorrect");
-            }
-            else {
-                return result;
-            }
-        })
-        .catch(err => {
-            throw err;
-        });
+        return {
+            name: name,
+            username: userData.username,
+            email: userData.email,
+            slogan: slogan
+        }
     }
 
-    public async changePassword (username: string, data: changePasswordData) {
-        if (!data.password || !data.newPassword) {
+    public async changePassword (token: string, data: ChangePasswordData) {
+        if (!data.oldPassword || !data.newPassword) {
             throw new Error("Invalid data");
         }
-        else if (!validator.isValidUsername(username)) {
-            throw new Error("Invalid username");
+
+        if (!validator.isValidPassword(data.newPassword)) {
+            throw new Error("Invalid password");
         }
-        else if (!validator.isValidPassword(data.newPassword)) {
-            throw new Error("Invalid new password");
+        
+        let userData: UserData = await this.getUserDataFromToken(token);
+
+        if (!this.matchPassword(data.oldPassword, userData.password)) {
+            throw new Error("Old password is incorrect");
         }
 
-        let hash = md5(data.password + salt);
-        let newHash = md5(data.newPassword + salt);
+        let newPassword: string = this.hashPassword(data.newPassword);
 
-        return await account.changePassword([newHash, username, hash])
-        .then((result: DbResult) => {
-            if (result.affectedRows === 0) {
-                throw new Error("Username not found or password is incorrect");
-            }
-            else {
-                return result;
-            }
-        })
-        .catch(err => {
-            throw err;
-        });
+        let result: DbResult = await account.changePassword([newPassword, String(userData.id)]);
+
+        if (!result || result.affectedRows == 0) {
+            throw new Error("Update failed");
+        }
+
+        return true;
     }
 
     public async updateAvatar (req, res, token: string) {

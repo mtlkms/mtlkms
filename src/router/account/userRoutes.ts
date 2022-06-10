@@ -40,17 +40,17 @@ router.get('/', (req, res) => {
 
 // Get user avatar
 router.get('/:username/avatar', (req, res) => {
-    res.set('Cache-Control', 'no-store');
+    res.set('Cache-Control', 'no-cache');
     res.sendFile(path.resolve(__dirname, '../../../assets/users/' + req.params.username + '/avatar.png'));
 });
 
-// Change name
-router.put('/:username', (req, res, next) => {
-    accountController.changeName(req.params.username, req.body)
+// Update User Info
+router.put('/', (req, res, next) => {
+    accountController.updateUserInfo(req.cookies.token, req.body)
     .then(result => {
         res.json({
             success: true,
-            result
+            user: result
         });
     })
     .catch(err => {
@@ -62,12 +62,11 @@ router.put('/:username', (req, res, next) => {
 });
 
 // Change password
-router.put('/:username/password', (req, res, next) => {
-    accountController.changePassword(req.params.username, req.body)
-    .then(result => {
+router.put('/password', (req, res, next) => {
+    accountController.changePassword(req.cookies.token, req.body)
+    .then(() => {
         res.json({
-            success: true,
-            result
+            success: true
         });
     })
     .catch(err => {
@@ -88,7 +87,7 @@ router.put('/:username/avatar', (req, res, next) => {
     }
     else {
         accountController.updateAvatar(req, res, req.cookies.token)
-        .then(result => {
+        .then(() => {
             res.json({
                 success: true
             });
