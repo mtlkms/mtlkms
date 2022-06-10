@@ -52,6 +52,12 @@ export default {
                     auth: true
                 },
                 {
+                    name: 'Nhật Ký Thời Gian Học',
+                    path: '/study-diary',
+                    icon: 'assignment',
+                    auth: true
+                },
+                {
                     name: 'Đăng Nhập',
                     path: '/login',
                     icon: 'login',

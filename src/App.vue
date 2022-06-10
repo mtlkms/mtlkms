@@ -21,18 +21,21 @@
       </Transition>
     </router-view>
   </div>
+
+  <LoadingEffect />
 </template>
 
 <script>
 import AppMenu from './components/AppMenu.vue'
+import LoadingEffect from '@/components/LoadingEffect.vue'
 import store from '@/assets/js/store'
-
 
 export default {
   name: 'App',
 
   components: {
-    AppMenu
+    AppMenu,
+    LoadingEffect
   },
 
   created () {
@@ -89,6 +92,10 @@ export default {
 /* --------------------------------------------------- */
 /* Custom                                              */
 /* --------------------------------------------------- */
+
+html {
+  scroll-behavior: smooth;
+}
 
 ::-webkit-scrollbar {
   width: 5px;
@@ -380,6 +387,48 @@ hr {
   left: 0;
   width: 100%;
 }
+
+.btn:active {
+  top: 1px;
+}
+
+/* --------------------------------------------------- */
+/* Breadcrumb                                          */
+/* --------------------------------------------------- */
+
+.breadcrumb {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: .75rem 1.75rem;
+  border-radius: .25rem;
+  /* background-color: #ff907f10; */
+  border-bottom: 1px solid #eee;
+  margin-bottom: 3rem;
+}
+
+.breadcrumb a {
+  text-decoration: none !important;
+  padding-left: .5rem;
+}
+
+.breadcrumb a::after {
+  content: ' / ';
+  padding: .5rem;
+}
+
+.breadcrumb a:first-child {
+  padding-left: 0;
+}
+
+.breadcrumb a:last-child::after {
+  content: '';
+}
+
+.breadcrumb a:last-child {
+  color: #e6705d;
+}
+
 /* --------------------------------------------------- */
 /* Custom class                                        */
 /* --------------------------------------------------- */
@@ -427,6 +476,18 @@ hr {
 
 .d-block {
   display: block;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.justify-content-center {
+  justify-content: center;
+}
+
+.align-items-center {
+  align-items: center;
 }
 
 .mx-auto {

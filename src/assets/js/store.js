@@ -1,5 +1,6 @@
 let data = {
     isLogin: false,
+    isLoading: false,
     user: {
         name: '',
         email: '',

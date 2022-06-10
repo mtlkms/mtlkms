@@ -10,6 +10,9 @@ import LogoutView from '../views/accounts/LogoutView.vue'
 import ProfileView from '../views/accounts/ProfileView.vue'
 import EditProfileView from '../views/accounts/EditProfileView.vue'
 
+import SDListView from '../views/study_diary/SDListView.vue'
+import SDTagView from '../views/study_diary/SDTagView.vue'
+
 const routes = [
   {
     path: '/',
@@ -63,12 +66,43 @@ const routes = [
     meta: {
       title: 'Chỉnh Sửa Thông Tin Cá Nhân - MTLKMS'
     }
+  },
+
+  {
+    path: '/study-diary',
+    name: 'study-diary',
+    component: SDListView,
+    meta: {
+      title: 'Nhật Ký Thời Gian Học - MTLKMS'
+    }
+  },
+
+  {
+    path: '/study-diary/:tag',
+    name: 'study-diary-tag',
+    component: SDTagView,
+    meta: {
+      title: 'Nhật Ký Thời Gian Học - MTLKMS'
+    }
   }
 ]
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
-  routes
+  routes,
+
+  scrollBehavior (to, from, savedPosition) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        if (savedPosition) {
+          resolve(savedPosition)
+        }
+        else {
+          resolve({ top: 0 })
+        }
+      }, 500)
+    })
+  }
 })
 
 export default router
