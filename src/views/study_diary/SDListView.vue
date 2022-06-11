@@ -13,24 +13,26 @@
 
     <!-- List of tags -->
     <div class="grid-list">
-        <div class="grid-item" style="background-color: #097721; color: #fff;">
-            <div class="title">
-                <div class="d-flex align-items-center">
-                    <span class="material-icons mr-2">label</span>
-                    <b>Thẻ Lĩnh Vực</b>
-                </div>
+        <div v-for="(tag, index) of tags" :key="index">
+            <div class="grid-item" :style="{backgroundColor: tag.bg_color, color: tag.text_color}">
+                <div class="title">
+                    <div class="d-flex align-items-center">
+                        <span class="material-icons mr-2">{{ tag.icon }}</span>
+                        <b>{{ tag.name }}</b>
+                    </div>
 
-                <button @click="editTagData.isDisplay = true">
-                    <span class="material-icons">edit</span>
-                </button>
-            </div>
-            
-            <div class="body">
-                <p>Hôm nay: 2 giờ</p>
-                <p>Tuần này: 23 giờ</p>
-                <p>Tháng này: 64 giờ</p>
-                <p>Năm nay: 99 giờ</p>
-                <p>Tổng thời gian học: 99 giờ</p>
+                    <button @click="openEditTagPopup(index)">
+                        <span class="material-icons">edit</span>
+                    </button>
+                </div>
+                
+                <div class="body">
+                    <p>Hôm nay: {{ showTime(tag.time_today) }}</p>
+                    <p>Tuần này: {{ showTime(tag.time_week) }}</p>
+                    <p>Tháng này: {{ showTime(tag.time_month) }}</p>
+                    <p>Năm nay: {{ showTime(tag.time_year) }}</p>
+                    <p>Tổng thời gian học: {{ showTime(tag.time_total) }}</p>
+                </div>
             </div>
         </div>
     </div>
@@ -152,12 +154,18 @@ export default {
         MessagePopup
     },
 
+    created () {
+        this.getTags()
+    },
+
     data () {
         return {
             data: store.getAll(),
+            tags: [],
 
             editTagData: {
                 title: 'Sửa thẻ',
+                index: 0,
                 id: 0,
                 icon: 'star',
                 name: 'Test',
@@ -189,8 +197,43 @@ export default {
     },
 
     methods: {
+        getTags () {
+            this.data.isLoading = true
+
+            api.get('/study-diary').then(res => {
+                this.data.isLoading = false
+
+                if (res.status === 200) {
+                    res.json().then(res => {
+                        this.tags = res.data
+                    })
+                } else {
+                    res.json().then(res => {
+                        console.log(res.error)
+
+                        this.showMessage(
+                            'Lỗi',
+                            'Không thể lấy dữ liệu',
+                            'error'
+                        )
+                    })
+                }
+            }).catch(err => {
+                console.log(err)
+
+                this.data.isLoading = false
+
+                this.showMessage(
+                    'Lỗi',
+                    'Lỗi kết nối đến server',
+                    'error'
+                )
+            })
+        },
+
         openCreateTagPopup () {
             this.editTagData.title = 'Tạo thẻ'
+
             this.editTagData.id = 0
             this.editTagData.icon = 'star'
             this.editTagData.name = 'New Tag'
@@ -203,6 +246,25 @@ export default {
                 year: 0,
                 total: 0
             }
+
+            this.editTagData.isDisplay = true
+        },
+
+        openEditTagPopup (index) {
+            this.editTagData.title = 'Sửa thẻ ' + this.tags[index].id
+            this.editTagData.index = index
+
+            this.editTagData.id = this.tags[index].id
+            this.editTagData.icon = this.tags[index].icon
+            this.editTagData.name = this.tags[index].name
+            this.editTagData.textColor = this.tags[index].text_color
+            this.editTagData.bgColor = this.tags[index].bg_color
+            this.editTagData.times.today = this.tags[index].time_today
+            this.editTagData.times.week = this.tags[index].time_week
+            this.editTagData.times.month = this.tags[index].time_month
+            this.editTagData.times.year = this.tags[index].time_year
+            this.editTagData.times.total = this.tags[index].time_total
+
             this.editTagData.isDisplay = true
         },
 
@@ -220,18 +282,35 @@ export default {
             api.post('/study-diary', {
                 name: this.editTagData.name,
                 icon: this.editTagData.icon,
-                bgColor: this.editTagData.bgColor,
-                textColor: this.editTagData.textColor
-            }).then(() => {
+                bg_color: this.editTagData.bgColor,
+                text_color: this.editTagData.textColor
+            }).then(res => {
                 this.data.isLoading = false
 
-                this.showMessage(
-                    'Thành công',
-                    'Thêm thẻ thành công',
-                    'success'
-                )
+                if (res.status == 200) {
+                    res.json().then(data => {
+                        this.tags.push(data.result)
 
-                this.editTagData.isDisplay = false
+                        this.showMessage(
+                            'Thành công',
+                            'Thêm thẻ thành công',
+                            'success'
+                        )
+
+                        this.editTagData.isDisplay = false
+                    })
+                }
+                else {
+                    res.json().then(data => {
+                        console.log(data.error)
+
+                        this.showMessage(
+                            'Lỗi',
+                            'Thêm thẻ thất bại',
+                            'error'
+                        )
+                    })
+                }
             }).catch(err => {
                 this.data.isLoading = false
 
@@ -251,20 +330,43 @@ export default {
             this.data.isLoading = true
 
             api.put('/study-diary/' + this.editTagData.id, {
+                id: this.editTagData.id,
                 name: this.editTagData.name,
                 icon: this.editTagData.icon,
-                bgColor: this.editTagData.bgColor,
-                textColor: this.editTagData.textColor
-            }).then(() => {
+                bg_color: this.editTagData.bgColor,
+                text_color: this.editTagData.textColor,
+                time_today: this.editTagData.times.today,
+                time_week: this.editTagData.times.week,
+                time_month: this.editTagData.times.month,
+                time_year: this.editTagData.times.year,
+                time_total: this.editTagData.times.total
+            }).then(res => {
                 this.data.isLoading = false
 
-                this.showMessage(
-                    'Thành công',
-                    'Cập nhật thẻ thành công',
-                    'success'
-                )
+                if (res.status == 200) {
+                    res.json().then(data => {
+                        this.tags[this.editTagData.index] = data.result
 
-                this.editTagData.isDisplay = false
+                        this.showMessage(
+                            'Thành công',
+                            'Cập nhật thẻ thành công',
+                            'success'
+                        )
+
+                        this.editTagData.isDisplay = false
+                    })
+                }
+                else {
+                    res.json().then(data => {
+                        console.log(data.error)
+
+                        this.showMessage(
+                            'Lỗi',
+                            'Cập nhật thẻ thất bại',
+                            'error'
+                        )
+                    })
+                }
             }).catch(err => {
                 this.data.isLoading = false
 
@@ -285,6 +387,12 @@ export default {
             this.message.message = message
             this.message.type = type
             this.message.isDisplay = !this.message.isDisplay
+        },
+
+        showTime (minutes) {
+            let hours = Math.floor(minutes / 60).toFixed(2)
+
+            return `${hours} giờ (${minutes} phút)`
         }
     }
 }
