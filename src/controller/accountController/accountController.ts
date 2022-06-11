@@ -25,6 +25,10 @@ class AccountController {
     }
 
     private getUsernameFromToken (token: string) : string {
+        if (!token) {
+            throw new Error("Invalid token");
+        }
+
         let username = token.split('__')[0];
         return username;
     }
@@ -34,7 +38,7 @@ class AccountController {
         return token === userToken;
     }
 
-    private async getUserDataFromToken (token: string) : Promise<UserData> {
+    public async getUserDataFromToken (token: string) : Promise<UserData> {
         let username: string = this.getUsernameFromToken(token);
 
         let userData: UserData = await account.get(username);
@@ -86,7 +90,6 @@ class AccountController {
             name: userData.name,
             username: userData.username,
             email: userData.email,
-            update_avatar_at: userData.update_avatar_at,
             id: userData.id,
             slogan: userData.slogan,
             created_at: userData.created_at,
