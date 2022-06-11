@@ -155,7 +155,9 @@ export default {
     },
 
     created () {
-        this.getTags()
+        if (!this.loadSessionData()) {
+            this.getTags()
+        }
     },
 
     data () {
@@ -206,6 +208,7 @@ export default {
                 if (res.status === 200) {
                     res.json().then(res => {
                         this.tags = res.data
+                        this.saveSessionData()
                     })
                 } else {
                     res.json().then(res => {
@@ -290,6 +293,7 @@ export default {
                 if (res.status == 200) {
                     res.json().then(data => {
                         this.tags.push(data.result)
+                        this.saveSessionData()
 
                         this.showMessage(
                             'Thành công',
@@ -346,6 +350,7 @@ export default {
                 if (res.status == 200) {
                     res.json().then(data => {
                         this.tags[this.editTagData.index] = data.result
+                        this.saveSessionData()
 
                         this.showMessage(
                             'Thành công',
@@ -393,6 +398,22 @@ export default {
             let hours = Math.floor(minutes / 60).toFixed(2)
 
             return `${hours} giờ (${minutes} phút)`
+        },
+
+        saveSessionData () {
+            sessionStorage.setItem('tags', JSON.stringify(this.tags))
+        },
+
+        loadSessionData () {
+            let tags = sessionStorage.getItem('tags')
+
+            if (tags) {
+                this.tags = JSON.parse(tags)
+                return true
+            }
+            else {
+                return false
+            }
         }
     }
 }
