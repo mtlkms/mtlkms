@@ -1,12 +1,12 @@
 <template>
 <div class="main">
-    <img :src="data.avatarURL" :alt="data.user.username" class="avatar-lg">
+    <img :src="data.avatarURL" :alt="data.user.username" class="avatar-xl">
 
     <div>
-        <p><b>{{ data.user.name }}</b></p>
-        <p>{{ data.user.username }}</p>
+        <h3>{{ data.user.name }}</h3>
+        <p class="text-secondary">{{ data.user.username }}</p>
         <p>{{ data.user.slogan }}</p>
-        <p><router-link to="/profile/edit">[Edit]</router-link></p>
+        <p><router-link to="/profile/edit">[Edit Profile]</router-link></p>
     </div>
 </div>
 </template>
@@ -31,7 +31,8 @@ export default {
 .main {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+    flex-direction: column;
     padding: 1rem;
     box-sizing: border-box;
 }
@@ -39,5 +40,24 @@ export default {
 .main > div {
     width: 100%;
     margin-left: 1rem;
+    text-align: center;
+    transition: margin-left .5s;
+}
+
+@media (min-width: 540px) {
+    .main {
+        flex-direction: row;
+        justify-content: space-evenly;
+    }
+
+    .main > div {
+        text-align: left;
+    }
+}
+
+@media (min-width: 1320px) {
+    .main > div {
+        margin-left: 2rem;
+    }
 }
 </style>

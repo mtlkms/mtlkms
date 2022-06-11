@@ -63,6 +63,7 @@ export default {
       }
     })
     
+    sessionStorage.clear()
   },
 
   data () {
@@ -576,6 +577,10 @@ hr {
 
 .text-right {
   text-align: right;
+}
+
+.text-secondary {
+  color: #6c757d;
 }
 
 </style>

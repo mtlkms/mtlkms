@@ -16,10 +16,12 @@
         <div v-for="(tag, index) of tags" :key="index">
             <div class="grid-item" :style="{backgroundColor: tag.bg_color, color: tag.text_color}">
                 <div class="title">
-                    <div class="d-flex align-items-center">
+                    <router-link
+                    class="d-flex align-items-center"
+                    :to="`/study-diary/${tag.id}`">
                         <span class="material-icons mr-2">{{ tag.icon }}</span>
                         <b>{{ tag.name }}</b>
-                    </div>
+                    </router-link>
 
                     <div>
                         <button @click="openEditTagPopup(index)">
@@ -555,6 +557,11 @@ export default {
 
 .grid-item .title button:hover {
     text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.1);
+}
+
+.grid-item .title a {
+    color: inherit;
+    text-decoration: none;
 }
 
 /* Edit tag popup */
