@@ -21,9 +21,15 @@
                         <b>{{ tag.name }}</b>
                     </div>
 
-                    <button @click="openEditTagPopup(index)">
-                        <span class="material-icons">edit</span>
-                    </button>
+                    <div>
+                        <button @click="openEditTagPopup(index)">
+                            <span class="material-icons">edit</span>
+                        </button>
+
+                        <button @click="openDeleteTagPopup(index)">
+                            <span class="material-icons">delete_forever</span>
+                        </button>
+                    </div>
                 </div>
                 
                 <div class="body">
@@ -134,6 +140,38 @@
         </div>
     </Transition>
 
+    <!-- Delete tag popup -->
+    <Transition name="fade-in">
+        <div class="popup" v-show="deleteTagData.isDisplay">
+            <div class="popup-bg" @click="deleteTagData.isDisplay = false"></div>
+
+            <div class="container container-sm">
+                <!-- Header -->
+                <div>
+                    <div class="d-flex justify-content-center align-items-center">
+                        <span class="material-icons mr-2">delete_forever</span>
+                        <h3>{{ deleteTagData.title }}</h3>
+                    </div>
+
+                    <span class="material-icons btn-close" @click="deleteTagData.isDisplay = false">close</span>
+                </div>
+
+                <!-- Body -->
+                <div>
+                    <p>Bạn có chắc muốn xóa thẻ <b>{{ deleteTagData.name }}</b> không?</p>
+                    <p>Thẻ này sẽ bị xóa vĩnh viễn.</p>
+
+                    <div class="mt-3 mb-3">
+                        <button class="btn btn-primary" @click="deleteTag">
+                            <span class="material-icons mr-2">delete_forever</span>
+                            Xóa
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </Transition>
+
     <MessagePopup
     :title="message.title"
     :message="message.message"
@@ -169,18 +207,26 @@ export default {
                 title: 'Sửa thẻ',
                 index: 0,
                 id: 0,
-                icon: 'star',
-                name: 'Test',
-                textColor: '#000000',
-                bgColor: '#ffa799',
+                icon: '',
+                name: '',
+                textColor: '',
+                bgColor: '',
                 times: {
-                    today: 12,
-                    week: 23,
-                    month: 44,
-                    year: 99,
-                    total: 99
+                    today: 0,
+                    week: 0,
+                    month: 0,
+                    year: 0,
+                    total: 0
                 },
                 isDisplay: false
+            },
+
+            deleteTagData: {
+                title: 'Xóa thẻ',
+                isDisplay: false,
+                index: 0,
+                id: 0,
+                name: ''
             },
 
             icons: [
@@ -271,6 +317,15 @@ export default {
             this.editTagData.isDisplay = true
         },
 
+        openDeleteTagPopup (index) {
+            this.deleteTagData.title = 'Xóa thẻ ' + this.tags[index].id
+            this.deleteTagData.index = index
+            this.deleteTagData.id = this.tags[index].id
+            this.deleteTagData.name = this.tags[index].name
+
+            this.deleteTagData.isDisplay = true
+        },
+
         submitEditTag () {
             if (this.editTagData.id === 0) {
                 this.createTag()
@@ -333,7 +388,7 @@ export default {
         updateTag () {
             this.data.isLoading = true
 
-            api.put('/study-diary/' + this.editTagData.id, {
+            api.put('/study-diary', {
                 id: this.editTagData.id,
                 name: this.editTagData.name,
                 icon: this.editTagData.icon,
@@ -382,6 +437,54 @@ export default {
                 )
 
                 this.editTagData.isDisplay = false
+
+                console.log(err)
+            })
+        },
+
+        deleteTag () {
+            this.data.isLoading = true
+
+            api.delete('/study-diary', {
+                id: this.deleteTagData.id
+            }).then(res => {
+                this.data.isLoading = false
+
+                if (res.status == 200) {
+                    res.json().then(() => {
+                        this.tags.splice(this.deleteTagData.index, 1)
+                        this.saveSessionData()
+
+                        this.showMessage(
+                            'Thành công',
+                            'Xóa thẻ thành công',
+                            'success'
+                        )
+
+                        this.deleteTagData.isDisplay = false
+                    })
+                }
+                else {
+                    res.json().then(data => {
+                        console.log(data.error)
+
+                        this.showMessage(
+                            'Lỗi',
+                            'Xóa thẻ thất bại',
+                            'error'
+                        )
+                    })
+                }
+            }).catch(err => {
+                this.data.isLoading = false
+
+                this.showMessage(
+                    'Lỗi',
+                    'Không thể kết nối đến máy chủ',
+                    'error'
+                )
+
+                this.deleteTagData.isDisplay = false
 
                 console.log(err)
             })

@@ -46,6 +46,17 @@ class API {
         })
     }
 
+    delete (url, data) {
+        return fetch(this.host + url, {
+            method: 'DELETE',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+    }
+
     updateAvatar (data) {
         let username = store.get('user').username
 
@@ -54,10 +65,6 @@ class API {
             credentials: 'include',
             body: data
         })
-    }
-
-    delete () {
-        
     }
 }
 
