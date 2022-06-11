@@ -18,12 +18,24 @@ import api from '@/assets/js/api'
 export default {
     name: 'LogoutView',
 
+    data () {
+        return {
+            data: store.getAll()
+        }
+    },
+
     methods: {
         logout() {
+            this.data.isLoading = true
+            
             api.get('/logout').then(() => {
+                this.data.isLoading = false
+
                 store.set('isLogin', false)
                 store.set('user', {})
                 this.$router.push('/login')
+            }).catch(() => {
+                this.data.isLoading = false
             })
         }
     }

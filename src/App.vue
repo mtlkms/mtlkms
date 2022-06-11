@@ -26,6 +26,13 @@
 </template>
 
 <script>
+/*          ,-.   -- Quạc quạc quạc
+    ,      ( {o\    -- Cạc cạc cạc cạc
+    {`"=,___) (`~
+     \  ,_.-   )
+~^~^~^`- ~^ ~^ '~^~^~^~
+*/
+
 import AppMenu from './components/AppMenu.vue'
 import LoadingEffect from '@/components/LoadingEffect.vue'
 import store from '@/assets/js/store'
@@ -486,6 +493,10 @@ hr {
   justify-content: center;
 }
 
+.justify-space-between {
+  justify-content: space-between;
+}
+
 .align-items-center {
   align-items: center;
 }
@@ -525,6 +536,38 @@ hr {
 
 .ml-4 {
   margin-left: 2rem;
+}
+
+.mb-1 {
+  margin-bottom: .25rem;
+}
+
+.mb-2 {
+  margin-bottom: .5rem;
+}
+
+.mb-3 {
+  margin-bottom: 1rem;
+}
+
+.mb-4 {
+  margin-bottom: 2rem;
+}
+
+.mt-1 {
+  margin-top: .25rem;
+}
+
+.mt-2 {
+  margin-top: .5rem;
+}
+
+.mt-3 {
+  margin-top: 1rem;
+}
+
+.mt-4 {
+  margin-top: 2rem;
 }
 
 .text-center {
