@@ -2,6 +2,18 @@ import db from '../../dbconnection';
 import { DbResult, SDTagData } from './SDInterface';
 
 class SDTag {
+    public getTag(id: number): Promise<SDTagData> {
+        return new Promise((resolve, reject) => {
+            db.query('SELECT * FROM sdtags WHERE id = ?', [id], (err, result) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(result[0]);
+                }
+            });
+        });
+    }
+
     public getAll(): Promise<Array<SDTagData>> {
         return new Promise((resolve, reject) => {
             db.query('SELECT * FROM sdtags order by time_total desc', (err, result) => {
@@ -16,7 +28,7 @@ class SDTag {
 
     public create(data: Array<string>): Promise<DbResult> {
         return new Promise((resolve, reject) => {
-            db.query('INSERT INTO sdtags(name, icon, bg_color, text_color) VALUES (?, ?, ?, ?)', data, (err, result) => {
+            db.query('INSERT INTO sdtags(name, icon, bg_color, text_color, user) VALUES (?, ?, ?, ?, ?)', data, (err, result) => {
                 if (err) {
                     reject(err);
                 } else {

@@ -20,4 +20,5 @@ export interface SDTagData {
     time_month: number;
     time_year: number;
     time_total: number;
+    user: number;
 }

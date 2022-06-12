@@ -4,6 +4,23 @@ import SDTagController from '../../controller/studyDiaryController/SDTagControll
 
 const router = express.Router();
 
+// Get a tag
+router.get('/:id', (req, res) => {
+    let id: number = parseInt(req.params.id);
+    
+    SDTagController.getTag(id).then((result) => {
+        res.json({
+            success: true,
+            data: result
+        });
+    }).catch(err => {
+        res.status(400).json({
+            success: false,
+            error: err.message
+        });
+    });
+});
+
 // Get all tags
 router.get('/', (req, res) => {
     SDTagController.getAll().then(result => {

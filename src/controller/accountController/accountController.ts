@@ -161,10 +161,12 @@ class AccountController {
         return {
             token: token,
             user: {
+                id: userData.id,
                 name: userData.name,
                 username: userData.username,
                 email: userData.email,
-                slogan: userData.slogan
+                slogan: userData.slogan,
+                created_at: userData.created_at
             }
         };
     }
@@ -203,10 +205,12 @@ class AccountController {
             return {
                 token: token,
                 user: {
+                    id: userData.id,
                     name: userData.name,
                     username: userData.username,
                     email: userData.email,
-                    slogan: userData.slogan
+                    slogan: userData.slogan,
+                    created_at: userData.created_at
                 }
             };
         }
@@ -216,10 +220,12 @@ class AccountController {
         let userData: UserData = await this.getUserDataFromToken(token);
 
         return {
+            id: userData.id,
             name: userData.name,
             username: userData.username,
             email: userData.email,
-            slogan: userData.slogan
+            slogan: userData.slogan,
+            created_at: userData.created_at
         };
     }
 
@@ -243,10 +249,12 @@ class AccountController {
         }
 
         return {
+            id: userData.id,
             name: name,
             username: userData.username,
             email: userData.email,
-            slogan: slogan
+            slogan: slogan,
+            created_at: userData.created_at
         }
     }
 

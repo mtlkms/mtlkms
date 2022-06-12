@@ -20,7 +20,7 @@ class Account {
 
     public getAll() {
         return new Promise((resolve, reject) => {
-            db.query('SELECT * FROM users', (err, result) => {
+            db.query('SELECT id, name, username, email, slogan, created_at FROM users', (err, result) => {
                 if (err) {
                     reject(err);
                 } else {
