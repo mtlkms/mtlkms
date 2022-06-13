@@ -14,7 +14,7 @@
         <div>
             <div
             v-if="learningDiaryData.is_learning == 1"
-            @click="stopLearn()">
+            @click="stopLearnPopup.isDisplay = true">
                 <div class="icon">
                     <span class="material-icons">stop</span>
                 </div>
@@ -67,13 +67,22 @@
                         <router-link to="/">Markdown</router-link>)
                     </p>
 
-                    <p>Value: {{ stopLearnPopup.log }}</p>
-
                     <TextArea
                     v-model="stopLearnPopup.log"
-                    :rows="30"
+                    :rows="20"
                     placeholder="Viết những gì bạn vừa học xuống đây nhé!"
                     ></TextArea>
+
+                    <p>Preview: </p>
+                    <div
+                    class="quote"
+                    v-html="stopLearnPopup.preview"
+                    ></div>
+
+                    <button class="btn btn-primary" @click="stopLearn()">
+                        <span class="material-icons">save</span>
+                        Lưu
+                    </button>
                 </div>
             </div>
         </div>
@@ -92,6 +101,7 @@ import store from '@/assets/js/store'
 import api from '@/assets/js/api'
 import MessagePopup from '@/components/MessagePopup.vue'
 import TextArea from '@/components/TextArea.vue'
+import { marked } from 'marked'
 
 export default {
     name: 'SDTagView',
@@ -133,8 +143,9 @@ export default {
             },
 
             stopLearnPopup: {
-                isDisplay: true,
-                log: ''
+                isDisplay: false,
+                log: '',
+                preview: ''
             },
 
             message: {
@@ -147,30 +158,32 @@ export default {
     },
 
     methods: {
-        getTagData () {
+        async getTagData () {
             this.data.isLoading = true
 
-            api.get('/study-diary/tag/' + this.$route.params.id).then(res => {
-                this.data.isLoading = false
+            let result, data;
 
-                res.json().then(data => {
-                    if (res.status === 200) {
-                        this.tagData = data.data
+            try {
+                result = await api.get('/study-diary/tag/' + this.$route.params.id)
+                data = await result.json()
 
-                        if (this.data.learningDiary.sdtag == this.tagData.id) {
-                            this.learningDiaryData = this.data.learningDiary
-                        }
-                    }
-                    else {
-                        console.log(data.error)
-                        this.$router.push('/study-diary')
-                    }
-                })
-            }).catch(err => {
-                console.log(err)
-                this.data.isLoading = false
+                if (result.status != 200) {
+                    this.$router.push('/study-diary')
+                    throw new Error(data.error)
+                }
+            }
+            catch (err) {
                 this.$router.push('/study-diary')
-            })
+                throw err
+            }
+
+            this.tagData = data.data
+
+            if (this.data.learningDiary.sdtag == this.tagData.id) {
+                this.learningDiaryData = this.data.learningDiary
+            }
+
+            this.data.isLoading = false
         },
 
         startLearn () {
@@ -207,7 +220,16 @@ export default {
             })
         },
 
-        stopLearn () {
+        async stopLearn () {
+            if (this.stopLearnPopup.log.length === 0) {
+                this.showMessage(
+                    'Lỗi',
+                    'Bạn chưa viết gì',
+                    'warning'
+                )
+                return
+            }
+
             
         },
 
@@ -230,6 +252,12 @@ export default {
             })
         }
     },
+
+    watch: {
+        'stopLearnPopup.log' (val) {
+            this.stopLearnPopup.preview = marked.parse(val)
+        }
+    }
 }
 </script>
 

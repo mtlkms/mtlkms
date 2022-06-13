@@ -448,7 +448,7 @@ textarea {
 }
 
 /* --------------------------------------------------- */
-/* Code                                                */
+/* Quote                                               */
 /* --------------------------------------------------- */
 
 .code {
@@ -463,6 +463,19 @@ textarea {
   box-sizing: border-box;
   max-width: 100%;
   overflow-x: scroll;
+}
+
+.quote {
+  display: block;
+  color: #222;
+  background-color: #ff907f10;
+  border-radius: 0 .25rem .25rem 0;
+  padding: 1rem;
+  margin: .5rem auto;
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow-x: scroll;
+  border-left: 1px solid #ff907f;
 }
 
 /* --------------------------------------------------- */
