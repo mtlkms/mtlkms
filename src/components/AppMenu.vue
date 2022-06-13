@@ -11,7 +11,18 @@
             <img :src="data.avatarURL" class="avatar d-block mx-auto">
             <h3>Xin chào {{ data.user.name }}!</h3>
             <hr>
-            <p>Hiện bạn chưa học gì!</p>
+            <p>
+                <span v-if="data.learningDiary">
+                    Bạn đang học 
+                    <router-link
+                    :to="'/study-diary/' + data.learningDiary.sdtag">
+                        môn này nè
+                    </router-link>
+                </span>
+                <span v-else>
+                    Bạn hiện chưa học gì!
+                </span>
+            </p>
             <hr>
             <p>Bạn còn 99 mục tiêu hằng ngày chưa hoàn tất!</p>
         </div>
@@ -83,7 +94,7 @@ export default {
         isActive(link) {
             return link.path == this.$route.path
         }
-    },
+    }
 }
 </script>
 

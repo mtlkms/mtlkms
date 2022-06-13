@@ -84,11 +84,7 @@ export default {
 }
 </script>
 
-<style scoped>
-h3 {
-    padding: 0
-}
-
+<style>
 .popup {
     position: fixed;
     top: 0;
@@ -101,7 +97,7 @@ h3 {
     align-items: center;
 }
 
-.popup-bg {
+.popup .popup-bg {
     position: absolute;
     top: 0;
     left: 0;
@@ -110,23 +106,29 @@ h3 {
     background: radial-gradient(circle, rgba(0, 0, 0, .1), rgba(0, 0, 0, .2), rgba(0, 0, 0, 0.5));
 }
 
-.container {
+.popup h3 {
+    padding: 0
+}
+
+.popup .container {
     background-color: #fff;
     padding: 1rem 2rem;
     padding-top: 0;
     border-radius: .5rem;
-    margin-top: -5rem;
     box-shadow: .5rem .5rem 1rem rgba(0, 0, 0, 0.1);
+    max-height: 100%;
+    box-sizing: border-box;
+    overflow-y: scroll;
 }
 
-.container > div:nth-child(1) {
+.popup .container > div:nth-child(1) {
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid #eee;
 }
 
-.btn-close {
+.popup .btn-close {
     font-size: 1.5rem;
     color: #aaa;
     cursor: pointer;
@@ -135,19 +137,19 @@ h3 {
     transition: background-color .5s;
 }
 
-.btn-close:hover {
+.popup .btn-close:hover {
     background-color: #eee;
 }
 
-.error {
+.popup .error {
     color: #f44336;
 }
 
-.success {
+.popup .success {
     color: #4caf50;
 }
 
-.warning {
+.popup .warning {
     color: #ff9800;
 }
 </style>

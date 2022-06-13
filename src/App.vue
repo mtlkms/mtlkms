@@ -26,6 +26,13 @@
 </template>
 
 <script>
+/*          ,-.   -- Quạc quạc quạc
+    ,      ( {o\    -- Cạc cạc cạc cạc
+    {`"=,___) (`~
+     \  ,_.-   )
+~^~^~^`- ~^ ~^ '~^~^~^~
+*/
+
 import AppMenu from './components/AppMenu.vue'
 import LoadingEffect from '@/components/LoadingEffect.vue'
 import store from '@/assets/js/store'
@@ -56,6 +63,7 @@ export default {
       }
     })
     
+    sessionStorage.clear()
   },
 
   data () {
@@ -176,12 +184,13 @@ hr {
   padding: .25rem;
   margin: 0;
   margin-bottom: 1rem;
-  background: #fff;
+  background: #ffffffcc;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  backdrop-filter: blur(5px);
   z-index: 20;
 }
 
@@ -336,6 +345,20 @@ hr {
   opacity: .5;
 }
 
+textarea {
+  position: relative;
+  font-family: 'Mali', sans-serif;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 1rem auto;
+  padding: 1rem;
+  background-color: #fff;
+  border-radius: .25rem;
+  resize: none;
+  border: 1px solid #ff907f;
+  outline: none;
+}
+
 /* --------------------------------------------------- */
 /* Button                                              */
 /* --------------------------------------------------- */
@@ -398,11 +421,8 @@ hr {
 
 .breadcrumb {
   position: relative;
-  display: flex;
-  align-items: center;
   padding: .75rem 1.75rem;
   border-radius: .25rem;
-  /* background-color: #ff907f10; */
   border-bottom: 1px solid #eee;
   margin-bottom: 3rem;
 }
@@ -427,6 +447,37 @@ hr {
 
 .breadcrumb a:last-child {
   color: #e6705d;
+}
+
+/* --------------------------------------------------- */
+/* Quote                                               */
+/* --------------------------------------------------- */
+
+.code {
+  display: block;
+  font-family: monospace;
+  font-size: 13px;
+  color: #333;
+  background-color: #ff907f30;
+  border-radius: .25rem;
+  padding: 1rem;
+  margin: .5rem auto;
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow-x: scroll;
+}
+
+.quote {
+  display: block;
+  color: #222;
+  background-color: #ff907f10;
+  border-radius: 0 .25rem .25rem 0;
+  padding: 1rem;
+  margin: .5rem auto;
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow-x: scroll;
+  border-left: 1px solid #ff907f;
 }
 
 /* --------------------------------------------------- */
@@ -486,6 +537,14 @@ hr {
   justify-content: center;
 }
 
+.justify-space-between {
+  justify-content: space-between;
+}
+
+.justify-end {
+  justify-content: flex-end;
+}
+
 .align-items-center {
   align-items: center;
 }
@@ -527,12 +586,48 @@ hr {
   margin-left: 2rem;
 }
 
+.mb-1 {
+  margin-bottom: .25rem;
+}
+
+.mb-2 {
+  margin-bottom: .5rem;
+}
+
+.mb-3 {
+  margin-bottom: 1rem;
+}
+
+.mb-4 {
+  margin-bottom: 2rem;
+}
+
+.mt-1 {
+  margin-top: .25rem;
+}
+
+.mt-2 {
+  margin-top: .5rem;
+}
+
+.mt-3 {
+  margin-top: 1rem;
+}
+
+.mt-4 {
+  margin-top: 2rem;
+}
+
 .text-center {
   text-align: center;
 }
 
 .text-right {
   text-align: right;
+}
+
+.text-secondary {
+  color: #6c757d;
 }
 
 </style>

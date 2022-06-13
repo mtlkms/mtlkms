@@ -136,8 +136,12 @@ export default {
             let data = new FormData()
             data.append('avatar', this.avatarFile)
 
+            this.data.isLoading = true
+
             api.updateAvatar(data)
             .then(res => {
+                this.data.isLoading = false
+
                 if (res.status == 200) {
                     location.reload()
                 }
@@ -150,6 +154,8 @@ export default {
                 }
             })
             .catch(err => {
+                this.data.isLoading = false
+
                 console.log(err)
 
                 this.showMessage(
@@ -171,8 +177,12 @@ export default {
                 return
             }
 
+            this.data.isLoading = true
+
             api.put('/user', this.form)
             .then(res => {
+                this.data.isLoading = false
+
                 if (res.status == 200) {
                     res.json().then(data => {
                         this.data.user = data.user
@@ -202,6 +212,8 @@ export default {
                 }
             })
             .catch(err => {
+                this.data.isLoading = false
+
                 console.log(err)
 
                 this.showMessage(
@@ -233,8 +245,12 @@ export default {
                 return
             }
 
+            this.data.isLoading = true
+
             api.put('/user/password', this.passwordForm)
             .then(res => {
+                this.data.isLoading = false
+
                 if (res.status == 200) {
                     res.json().then(() => {
                         this.showMessage(
@@ -265,6 +281,8 @@ export default {
                 }
             })
             .catch(err => {
+                this.data.isLoading = false
+                
                 console.log(err)
 
                 this.showMessage(

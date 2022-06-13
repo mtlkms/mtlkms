@@ -78,7 +78,7 @@ const routes = [
   },
 
   {
-    path: '/study-diary/:tag',
+    path: '/study-diary/:id',
     name: 'study-diary-tag',
     component: SDTagView,
     meta: {

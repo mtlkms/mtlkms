@@ -82,6 +82,8 @@ export default {
 
     data () {
         return {
+            data: store.getAll(),
+
             form: {
                 name: '',
                 username: '',
@@ -89,6 +91,7 @@ export default {
                 password: '',
                 repassword: ''
             },
+
             apiLog: '',
             log: '',
             isSuccess: false
@@ -103,8 +106,12 @@ export default {
                 return
             }
 
+            this.data.isLoading = true
+
             api.post('/register', this.form)
             .then(res => {
+                this.data.isLoading = false
+
                 if (res.status === 200) {
                     res.json().then(data => {
                         this.isSuccess = true
@@ -125,6 +132,8 @@ export default {
                 }
             })
             .catch(err => {
+                this.data.isLoading = false
+                
                 console.log(err)
             })
         },

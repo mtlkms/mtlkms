@@ -46,6 +46,17 @@ class API {
         })
     }
 
+    delete (url, data) {
+        return fetch(this.host + url, {
+            method: 'DELETE',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+    }
+
     updateAvatar (data) {
         let username = store.get('user').username
 
@@ -56,8 +67,16 @@ class API {
         })
     }
 
-    delete () {
-        
+    async getLearningDiary () {
+        let result = await this.get('/study-diary/diary/learning')
+        let data = await result.json()
+
+        if (result.status == 200) {
+            return data.data
+        }
+        else {
+            throw new Error(data.error)
+        }
     }
 }
 
