@@ -2,11 +2,14 @@ let data = {
     isLogin: false,
     isLoading: false,
     user: {
+        id: '',
         name: '',
         email: '',
         username: '',
-        slogan: ''
-    }
+        slogan: '',
+        created_at: ''
+    },
+    learningDiary: false
 };
 
 class Store {

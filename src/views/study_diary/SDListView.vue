@@ -1,5 +1,46 @@
 <template>
 <div class="container">
+    <!-- List learning tags -->
+    <h3>Đang học</h3>
+    
+    <div v-if="learningTags.length == 0">
+        Bạn hiện chưa học gì
+    </div>
+    <div v-else class="grid-list">
+        <div v-for="(tag, index) of learningTags" :key="index">
+            <div class="grid-item" :style="{backgroundColor: tag.bg_color, color: tag.text_color}">
+                <div class="title">
+                    <router-link
+                    class="d-flex align-items-center"
+                    :to="`/study-diary/${tag.id}`"
+                    :id="`sdtag_${tag.id}`">
+                        <span class="material-icons mr-2">{{ tag.icon }}</span>
+                        <b>{{ tag.name }}</b>
+                    </router-link>
+
+                    <div>
+                        <button>
+                            <span class="material-icons">edit</span>
+                        </button>
+
+                        <button>
+                            <span class="material-icons">delete_forever</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="body">
+                    <p>Hôm nay: {{ showTime(tag.time_today) }}</p>
+                    <p>Tuần này: {{ showTime(tag.time_week) }}</p>
+                    <p>Tháng này: {{ showTime(tag.time_month) }}</p>
+                    <p>Năm nay: {{ showTime(tag.time_year) }}</p>
+                    <p>Tổng thời gian học: {{ showTime(tag.time_total) }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- List of tags -->
     <div class="d-flex justify-space-between align-items-center">
         <h3>Thẻ Lĩnh Vực</h3>
 
@@ -11,14 +52,17 @@
         </button>
     </div>
 
-    <!-- List of tags -->
-    <div class="grid-list">
+    <div v-if="tags.length == 0">
+        Bạn chưa tạo thẻ nào
+    </div>
+    <div v-else class="grid-list">
         <div v-for="(tag, index) of tags" :key="index">
             <div class="grid-item" :style="{backgroundColor: tag.bg_color, color: tag.text_color}">
                 <div class="title">
                     <router-link
                     class="d-flex align-items-center"
-                    :to="`/study-diary/${tag.id}`">
+                    :to="`/study-diary/${tag.id}`"
+                    :id="`sdtag_${tag.id}`">
                         <span class="material-icons mr-2">{{ tag.icon }}</span>
                         <b>{{ tag.name }}</b>
                     </router-link>
@@ -204,6 +248,7 @@ export default {
         return {
             data: store.getAll(),
             tags: [],
+            learningTags: [],
 
             editTagData: {
                 title: 'Sửa thẻ',
@@ -250,12 +295,25 @@ export default {
         getTags () {
             this.data.isLoading = true
 
-            api.get('/study-diary').then(res => {
+            api.get('/study-diary/' + this.data.user.id).then(res => {
                 this.data.isLoading = false
 
                 if (res.status === 200) {
-                    res.json().then(res => {
-                        this.tags = res.data
+                    res.json().then(data => {
+                        if (this.data.learningDiary) {
+                            data.data.forEach(tag => {
+                                if (tag.id == this.data.learningDiary.sdtag) {
+                                    this.learningTags.push(tag)
+                                }
+                                else {
+                                    this.tags.push(tag)
+                                }
+                            })
+                        }
+                        else {
+                            this.tags = data.data
+                        }
+
                         this.saveSessionData()
                     })
                 } else {
@@ -395,12 +453,7 @@ export default {
                 name: this.editTagData.name,
                 icon: this.editTagData.icon,
                 bg_color: this.editTagData.bgColor,
-                text_color: this.editTagData.textColor,
-                time_today: this.editTagData.times.today,
-                time_week: this.editTagData.times.week,
-                time_month: this.editTagData.times.month,
-                time_year: this.editTagData.times.year,
-                time_total: this.editTagData.times.total
+                text_color: this.editTagData.textColor
             }).then(res => {
                 this.data.isLoading = false
 
@@ -506,14 +559,21 @@ export default {
         },
 
         saveSessionData () {
-            sessionStorage.setItem('tags', JSON.stringify(this.tags))
+            sessionStorage.setItem('tags', JSON.stringify({
+                tags: this.tags,
+                learningTags: this.learningTags
+            }))
         },
 
         loadSessionData () {
-            let tags = sessionStorage.getItem('tags')
+            let str = sessionStorage.getItem('tags')
 
-            if (tags) {
-                this.tags = JSON.parse(tags)
+            if (str) {
+                let tags = JSON.parse(str)
+
+                this.tags = tags.tags
+                this.learningTags = tags.learningTags
+                
                 return true
             }
             else {
@@ -528,7 +588,7 @@ export default {
 /* Grid list */
 .grid-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     grid-gap: .5rem;
     margin-top: 20px;
 }

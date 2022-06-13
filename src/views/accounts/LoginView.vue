@@ -130,31 +130,36 @@ export default {
             }
         },
 
-        checkLogin () {
+        async checkLogin () {
             if (store.get('isLogin')) {
                 this.redirect()
             }
             
             this.data.isLoading = true
 
-            api.get('/check-login')
-            .then(res => {
-                this.data.isLoading = false
+            let result = await api.get('/check-login')
+            let data = await result.json()
 
-                if (res.status === 200) {
-                    res.json().then(data => {
-                        store.set('user', data.user)
-                        store.set('isLogin', true)
-                        api.setAvatarURL()
-                        this.redirect()
-                    })
-                }
-            })
-            .catch(err => {
-                this.data.isLoading = false
-                
+            this.data.isLoading = false
+
+            if (result.status !== 200) {
+                throw new Error('Check login failed')
+            }
+
+            store.set('user', data.user)
+            store.set('isLogin', true)
+            api.setAvatarURL()
+
+            // Get learning diary
+            try {
+                let diary = await api.getLearningDiary()
+                store.set('learningDiary', diary)
+            }
+            catch (err) {
                 console.log(err)
-            })
+            }
+
+            this.redirect()
         }
     }
 }

@@ -1,27 +1,267 @@
 <template>
 <div class="container">
-    <h3>Hello</h3>
+    <div class="breadcrumb">
+        <router-link to="/study-diary">Nhật Ký T.Gian Học</router-link>
+        <router-link :to="'/study-diary/' + tagData.id">{{ tagData.name }}</router-link>
+    </div>
+
+    <div
+    class="header"
+    :style="{
+        backgroundColor: tagData.bg_color,
+        color: tagData.text_color
+    }">
+        <div>
+            <div
+            v-if="learningDiaryData.is_learning == 1"
+            @click="stopLearn()">
+                <div class="icon">
+                    <span class="material-icons">stop</span>
+                </div>
+
+                <p>Bắt đầu: {{ convertISOTimeToLocalDate(learningDiaryData.start_at) }}</p>
+                <p>51 phut</p>
+            </div>
+            <div
+            v-else
+            class="icon"
+            @click="startLearn()" >
+                <span class="material-icons">play_arrow</span>
+            </div>
+        </div>
+
+        <div>
+            <div class="d-flex justify-content-center align-items-center">
+                <span class="material-icons mr-2">{{ tagData.icon }}</span>
+                <h3>{{ tagData.name }}</h3>
+            </div>
+
+            <p>Hôm nay: {{ minutesToStr(tagData.time_today) }}</p>
+            <p>Tuần này: {{ minutesToStr(tagData.time_week) }}</p>
+            <p>Tháng này: {{ minutesToStr(tagData.time_month) }}</p>
+            <p>Năm nay: {{ minutesToStr(tagData.time_year) }}</p>
+            <p>Tổng thời gian học: {{ minutesToStr(tagData.time_total) }}</p>
+        </div>
+    </div>
+
+    <Transition name="fade-in">
+        <div class="popup" v-show="stopLearnPopup.isDisplay">
+            <div class="popup-bg" @click="stopLearnPopup.isDisplay = false"></div>
+
+            <div class="container container-md">
+                <!-- Header -->
+                <div>
+                    <div class="d-flex justify-content-center align-items-center">
+                        <span class="material-icons mr-2">delete_forever</span>
+                        <h3>Không học nữa à?</h3>
+                    </div>
+
+                    <span class="material-icons btn-close" @click="stopLearnPopup.isDisplay = false">close</span>
+                </div>
+
+                <!-- Body -->
+                <div>
+                    <p>Bạn đã học được gì rồi? Viết xuống đây nhé!</p>
+                    <p class="text-secondary">
+                        (Cú pháp viết chuẩn
+                        <router-link to="/">Markdown</router-link>)
+                    </p>
+
+                    <p>Value: {{ stopLearnPopup.log }}</p>
+
+                    <TextArea
+                    v-model="stopLearnPopup.log"
+                    :rows="30"
+                    placeholder="Viết những gì bạn vừa học xuống đây nhé!"
+                    ></TextArea>
+                </div>
+            </div>
+        </div>
+    </Transition>
+
+    <MessagePopup
+    :title="message.title"
+    :message="message.message"
+    :type="message.type"
+    :is-display="message.isDisplay" />
 </div>
 </template>
 
 <script>
 import store from '@/assets/js/store'
+import api from '@/assets/js/api'
+import MessagePopup from '@/components/MessagePopup.vue'
+import TextArea from '@/components/TextArea.vue'
 
 export default {
     name: 'SDTagView',
 
     created () {
+        this.getTagData()
+    },
 
+    components: {
+        MessagePopup,
+        TextArea
     },
 
     data () {
         return {
-            data: store.getAll()
+            data: store.getAll(),
+
+            tagData: {
+                id: 0,
+                name: '',
+                bg_color: 'inherit',
+                text_color: 'inherit',
+                icon: '',
+                time_today: 0,
+                time_week: 0,
+                time_month: 0,
+                time_year: 0,
+                time_total: 0
+            },
+
+            learningDiaryData: {
+                id: 0,
+                sdtag: 0,
+                user: 0,
+                log: '',
+                is_learning: 0,
+                start_at: '',
+                stop_at: ''
+            },
+
+            stopLearnPopup: {
+                isDisplay: true,
+                log: ''
+            },
+
+            message: {
+                title: '',
+                message: '',
+                type: '',
+                isDisplay: false
+            }
         }
     },
 
     methods: {
+        getTagData () {
+            this.data.isLoading = true
 
+            api.get('/study-diary/tag/' + this.$route.params.id).then(res => {
+                this.data.isLoading = false
+
+                res.json().then(data => {
+                    if (res.status === 200) {
+                        this.tagData = data.data
+
+                        if (this.data.learningDiary.sdtag == this.tagData.id) {
+                            this.learningDiaryData = this.data.learningDiary
+                        }
+                    }
+                    else {
+                        console.log(data.error)
+                        this.$router.push('/study-diary')
+                    }
+                })
+            }).catch(err => {
+                console.log(err)
+                this.data.isLoading = false
+                this.$router.push('/study-diary')
+            })
+        },
+
+        startLearn () {
+            this.data.isLoading = true
+
+            api.post('/study-diary/diary', {
+                sdtag: this.tagData.id
+            }).then(res => {
+                this.data.isLoading = false
+
+                res.json().then(data => {
+                    if (res.status === 200) {
+                        this.learningDiaryData = data.data
+                        this.data.learningDiary = this.learningDiaryData
+                        sessionStorage.removeItem('tags')
+                    }
+                    else {
+                        console.log(data.error)
+                        this.showMessage(
+                            'Lỗi',
+                            'Đã có lỗi xảy ra, vui lòng thử lại sau',
+                            'error'
+                        )
+                    }
+                })
+            }).catch(err => {
+                console.log(err)
+                this.data.isLoading = false
+                this.showMessage(
+                    'Lỗi',
+                    'Không thể kết nối đến máy chủ, vui lòng thử lại sau',
+                    'error'
+                )
+            })
+        },
+
+        stopLearn () {
+            
+        },
+
+        minutesToStr (minutes) {
+            let hours = Math.floor(minutes / 60).toFixed(2)
+
+            return `${hours} giờ (${minutes} phút)`
+        },
+
+        showMessage (title, message, type) {
+            this.message.title = title
+            this.message.message = message
+            this.message.type = type
+            this.message.isDisplay = !this.message.isDisplay
+        },
+
+        convertISOTimeToLocalDate (isoTime) {
+            return new Date(isoTime).toLocaleString('vi-VN', {
+                timeZone: 'Asia/Ho_Chi_Minh'
+            })
+        }
     },
 }
 </script>
+
+<style scoped>
+.header {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    border-radius: .5rem;
+    box-sizing: border-box;
+    padding: 2rem 1rem;
+}
+
+.header > div {
+    text-align: center;
+}
+
+.header .icon {
+    display: inline-block;
+    padding: 1rem;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color .5s;
+    box-sizing: border-box;
+}
+
+.header .icon:hover {
+    background-color: #f5f5f5;
+}
+
+.header .icon .material-icons {
+    font-size: 7rem;
+}
+</style>

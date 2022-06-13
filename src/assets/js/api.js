@@ -66,6 +66,18 @@ class API {
             body: data
         })
     }
+
+    async getLearningDiary () {
+        let result = await this.get('/study-diary/diary/learning')
+        let data = await result.json()
+
+        if (result.status == 200) {
+            return data.data
+        }
+        else {
+            throw new Error(data.error)
+        }
+    }
 }
 
 export default new API()

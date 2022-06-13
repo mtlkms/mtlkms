@@ -4,7 +4,7 @@
 
     <div>
         <h3>{{ data.user.name }}</h3>
-        <p class="text-secondary">{{ data.user.username }}</p>
+        <p class="text-secondary">{{ data.user.username }} - Tham gia lúc {{ convertTimestampToLocalDate(data.user.created_at) }}</p>
         <p>{{ data.user.slogan }}</p>
         <p><router-link to="/profile/edit">[Edit Profile]</router-link></p>
     </div>
@@ -22,6 +22,14 @@ export default {
         return {
             data: store.getAll(),
             api: api
+        }
+    },
+
+    methods: {
+        convertTimestampToLocalDate (timestamp) {
+            return new Date(timestamp).toLocaleString('vi-VN', {
+                timeZone: 'Asia/Ho_Chi_Minh'
+            })
         }
     }
 }

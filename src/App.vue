@@ -344,6 +344,19 @@ hr {
   opacity: .5;
 }
 
+textarea {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 1rem auto;
+  padding: 1rem;
+  background-color: #fff;
+  border-radius: .25rem;
+  resize: none;
+  border: 1px solid #ff907f;
+  outline: none;
+}
+
 /* --------------------------------------------------- */
 /* Button                                              */
 /* --------------------------------------------------- */
@@ -406,11 +419,8 @@ hr {
 
 .breadcrumb {
   position: relative;
-  display: flex;
-  align-items: center;
   padding: .75rem 1.75rem;
   border-radius: .25rem;
-  /* background-color: #ff907f10; */
   border-bottom: 1px solid #eee;
   margin-bottom: 3rem;
 }
@@ -435,6 +445,24 @@ hr {
 
 .breadcrumb a:last-child {
   color: #e6705d;
+}
+
+/* --------------------------------------------------- */
+/* Code                                                */
+/* --------------------------------------------------- */
+
+.code {
+  display: block;
+  font-family: monospace;
+  font-size: 13px;
+  color: #333;
+  background-color: #ff907f30;
+  border-radius: .25rem;
+  padding: 1rem;
+  margin: .5rem auto;
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow-x: scroll;
 }
 
 /* --------------------------------------------------- */
@@ -496,6 +524,10 @@ hr {
 
 .justify-space-between {
   justify-content: space-between;
+}
+
+.justify-end {
+  justify-content: flex-end;
 }
 
 .align-items-center {
