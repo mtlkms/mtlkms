@@ -22,3 +22,13 @@ export interface SDTagData {
     time_total: number;
     user: number;
 }
+
+export interface diaryData {
+    id: number;
+    sdtag: number;
+    user: number;
+    is_learning: number;
+    start_at: string;
+    stop_at: string;
+    log: string;
+}

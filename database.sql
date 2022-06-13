@@ -35,7 +35,7 @@ CREATE TABLE
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `sdtag` int(11) unsigned NOT NULL,
     `user` int(11) unsigned NOT NULL,
-    `is_learning` bit(1) NOT NULL DEFAULT 1,
+    `is_learning` int(1) unsigned NOT NULL DEFAULT 1,
     `start_at` timestamp NOT NULL DEFAULT current_timestamp(),
     `stop_at` timestamp NULL DEFAULT NULL,
     `log` text DEFAULT NULL,

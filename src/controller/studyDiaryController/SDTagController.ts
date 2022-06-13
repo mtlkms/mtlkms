@@ -10,10 +10,8 @@ class SDTagController {
         return result;
     }
 
-    public async getAll(): Promise<Array<SDTagData>> {
-        let result: Array<SDTagData> = await SDTag.getAll();
-        
-        console.log(new Date());
+    public async getAll(userID): Promise<Array<SDTagData>> {
+        let result: Array<SDTagData> = await SDTag.getAll(parseInt(userID));
 
         return result;
     }
@@ -72,7 +70,7 @@ class SDTagController {
             time_year: tag.time_year,
             time_total: tag.time_total,
             user: tag.user
-        }
+        };
     }
 
     public async delete(token: string, id: number): Promise<boolean> {

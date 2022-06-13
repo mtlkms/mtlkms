@@ -14,9 +14,9 @@ class SDTag {
         });
     }
 
-    public getAll(): Promise<Array<SDTagData>> {
+    public getAll(userID: number): Promise<Array<SDTagData>> {
         return new Promise((resolve, reject) => {
-            db.query('SELECT * FROM sdtags order by time_total desc', (err, result) => {
+            db.query('SELECT * FROM sdtags where user=? order by time_total desc', [userID], (err, result) => {
                 if (err) {
                     reject(err);
                 } else {

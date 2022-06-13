@@ -1,11 +1,10 @@
 import * as express from 'express';
-import * as path from 'path';
 import SDTagController from '../../controller/studyDiaryController/SDTagController';
 
 const router = express.Router();
 
 // Get a tag
-router.get('/:id', (req, res) => {
+router.get('/tag/:id', (req, res) => {
     let id: number = parseInt(req.params.id);
     
     SDTagController.getTag(id).then((result) => {
@@ -22,8 +21,8 @@ router.get('/:id', (req, res) => {
 });
 
 // Get all tags
-router.get('/', (req, res) => {
-    SDTagController.getAll().then(result => {
+router.get('/:id', (req, res) => {
+    SDTagController.getAll(req.params.id).then(result => {
         res.json({
             success: true,
             data: result
