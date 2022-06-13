@@ -187,6 +187,16 @@ export default {
         },
 
         startLearn () {
+            if (this.data.learningDiary) {
+                this.showMessage(
+                    'Lỗi',
+                    'Bạn đang học môn khác rồi!',
+                    'warning'
+                )
+
+                return
+            }
+
             this.data.isLoading = true
 
             api.post('/study-diary/diary', {
@@ -230,7 +240,39 @@ export default {
                 return
             }
 
-            
+            this.data.isLoading = true
+
+            let result = await api.put('/study-diary/diary', {
+                id: this.learningDiaryData.id,
+                log: this.stopLearnPopup.log
+            })
+
+            let data = await result.json()
+
+            if (result.status !== 200) {
+                this.showMessage(
+                    'Lỗi',
+                    'Đã có lỗi xảy ra, vui lòng thử lại sau',
+                    'error'
+                )
+                
+                throw new Error(data.error)
+            }
+
+            this.learningDiaryData.is_learning = 0
+            this.data.learningDiary = false
+            this.stopLearnPopup.isDisplay = false
+            this.stopLearnPopup.log = ''
+
+            this.tagData = data.data
+
+            this.showMessage(
+                'Thành công',
+                'Lưu thành công',
+                'success'
+            )
+
+            this.data.isLoading = false
         },
 
         minutesToStr (minutes) {
