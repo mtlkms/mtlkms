@@ -7,7 +7,6 @@ export interface UserData {
     forget_pwd: string;
     slogan: string;
     created_at: string;
-    update_avatar_at: number;
 }
 
 export interface DbResult {

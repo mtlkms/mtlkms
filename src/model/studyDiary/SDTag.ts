@@ -1,14 +1,10 @@
 import db from '../../dbconnection';
-import { DbResult, UserData } from './accountInterface';
+import { DbResult, SDTagData } from './SDInterface';
 
-class Account {
-    constructor () {
-
-    }
-    
-    public get(username: string) : Promise<UserData> {
+class SDTag {
+    public getTag(id: number): Promise<SDTagData> {
         return new Promise((resolve, reject) => {
-            db.query('SELECT * FROM users where username=?', [username], (err, result) => {
+            db.query('SELECT * FROM sdtags WHERE id = ?', [id], (err, result) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -18,9 +14,9 @@ class Account {
         });
     }
 
-    public getAll() {
+    public getAll(userID: number): Promise<Array<SDTagData>> {
         return new Promise((resolve, reject) => {
-            db.query('SELECT id, name, username, email, slogan, created_at FROM users', (err, result) => {
+            db.query('SELECT * FROM sdtags where user=? order by time_total desc', [userID], (err, result) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -30,9 +26,9 @@ class Account {
         });
     }
 
-    public create(data: Array<string>) {
+    public create(data: Array<string>): Promise<DbResult> {
         return new Promise((resolve, reject) => {
-            db.query('INSERT INTO users(name, email, username, password) VALUES (?, ?, ?, ?)', data, (err, result) => {
+            db.query('INSERT INTO sdtags(name, icon, bg_color, text_color, user) VALUES (?, ?, ?, ?, ?)', data, (err, result) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -42,21 +38,9 @@ class Account {
         });
     }
 
-    public login(data: Array<string>) {
+    public update(data: Array<string>): Promise<DbResult> {
         return new Promise((resolve, reject) => {
-            db.query('SELECT * FROM users WHERE username=? AND password=?', data, (err, result) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(result[0]);
-                }
-            });
-        });
-    }
-
-    public updateUserInfo(data: Array<string>) : Promise<DbResult> {
-        return new Promise((resolve, reject) => {
-            db.query('UPDATE users SET name=?, slogan=? WHERE id=?', data, (err, result) => {
+            db.query('UPDATE sdtags SET name = ?, icon = ?, bg_color = ?, text_color = ? WHERE id = ? AND user = ?', data, (err, result) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -66,9 +50,21 @@ class Account {
         });
     }
 
-    public changePassword(data: Array<string>) : Promise<DbResult> {
+    public updateTime(data: Array<number>): Promise<DbResult> {
         return new Promise((resolve, reject) => {
-            db.query('UPDATE users SET password=? WHERE id=?', data, (err, result) => {
+            db.query('UPDATE sdtags SET time_today = ?, time_week = ?, time_month = ?, time_year = ?, time_total = ? WHERE id = ? AND user = ?', data, (err, result) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(result);
+                }
+            });
+        });
+    }
+
+    public delete(data: Array<string>): Promise<DbResult> {
+        return new Promise((resolve, reject) => {
+            db.query('DELETE FROM sdtags WHERE id = ? AND user = ?', data, (err, result) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -79,4 +75,4 @@ class Account {
     }
 }
 
-export default new Account();
+export default new SDTag();
