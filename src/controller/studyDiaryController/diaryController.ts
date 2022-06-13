@@ -40,6 +40,14 @@ class DiaryController {
             throw new Error('Learning Diary not found');
         }
     }
+
+    public async stopLearningDiary(token: string, data: diaryData) {
+        // Check if the user is logged in
+        let userData: UserData = await accountController.getUserDataFromToken(token);
+
+        // Update
+        
+    }
 }
 
 export default new DiaryController();

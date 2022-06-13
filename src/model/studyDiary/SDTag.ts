@@ -40,7 +40,7 @@ class SDTag {
 
     public update(data: Array<string>): Promise<DbResult> {
         return new Promise((resolve, reject) => {
-            db.query('UPDATE sdtags SET name = ?, icon = ?, bg_color = ?, text_color = ? WHERE id = ?', data, (err, result) => {
+            db.query('UPDATE sdtags SET name = ?, icon = ?, bg_color = ?, text_color = ? WHERE id = ? AND user = ?', data, (err, result) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -50,9 +50,9 @@ class SDTag {
         });
     }
 
-    public delete(id: number): Promise<DbResult> {
+    public delete(data: Array<string>): Promise<DbResult> {
         return new Promise((resolve, reject) => {
-            db.query('DELETE FROM sdtags WHERE id = ?', [id], (err, result) => {
+            db.query('DELETE FROM sdtags WHERE id = ? AND user = ?', data, (err, result) => {
                 if (err) {
                     reject(err);
                 } else {

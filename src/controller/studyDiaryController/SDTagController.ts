@@ -52,7 +52,7 @@ class SDTagController {
         }
 
         // Update
-        let result: DbResult = await SDTag.update([data.name, data.icon, data.bg_color, data.text_color, String(data.id)]);
+        let result: DbResult = await SDTag.update([data.name, data.icon, data.bg_color, data.text_color, String(data.id), String(userData.id)]);
 
         if (result.affectedRows == 0) {
             throw new Error('Tag update failed');
@@ -73,12 +73,12 @@ class SDTagController {
         };
     }
 
-    public async delete(token: string, id: number): Promise<boolean> {
+    public async delete(token: string, id: string): Promise<boolean> {
         // Check if the user is logged in
-        await accountController.getUserDataFromToken(token);
+        let userData: UserData = await accountController.getUserDataFromToken(token);
 
         // Delete
-        let result: DbResult = await SDTag.delete(id);
+        let result: DbResult = await SDTag.delete([id, String(userData.id)]);
 
         if (result.affectedRows == 0) {
             throw new Error('Tag deletion failed');
