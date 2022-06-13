@@ -33,4 +33,19 @@ router.get('/learning', (req, res) => {
     });
 });
 
+// Stop learning diary
+router.put('/', (req, res) => {
+    diaryController.stopLearningDiary(req.cookies.token, req.body).then(result => {
+        res.json({
+            success: true,
+            data: result
+        });
+    }).catch(err => {
+        res.status(400).json({
+            success: false,
+            error: err.message
+        });
+    });
+});
+
 export default router;

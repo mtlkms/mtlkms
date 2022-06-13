@@ -50,6 +50,18 @@ class SDTag {
         });
     }
 
+    public updateTime(data: Array<number>): Promise<DbResult> {
+        return new Promise((resolve, reject) => {
+            db.query('UPDATE sdtags SET time_today = ?, time_week = ?, time_month = ?, time_year = ?, time_total = ? WHERE id = ? AND user = ?', data, (err, result) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(result);
+                }
+            });
+        });
+    }
+
     public delete(data: Array<string>): Promise<DbResult> {
         return new Promise((resolve, reject) => {
             db.query('DELETE FROM sdtags WHERE id = ? AND user = ?', data, (err, result) => {
