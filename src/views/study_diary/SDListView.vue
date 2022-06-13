@@ -553,7 +553,7 @@ export default {
         },
 
         showTime (minutes) {
-            let hours = Math.floor(minutes / 60).toFixed(2)
+            let hours = (minutes / 60).toFixed(2)
 
             return `${hours} giờ (${minutes} phút)`
         },

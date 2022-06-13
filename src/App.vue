@@ -184,12 +184,13 @@ hr {
   padding: .25rem;
   margin: 0;
   margin-bottom: 1rem;
-  background: #fff;
+  background: #ffffffcc;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  backdrop-filter: blur(5px);
   z-index: 20;
 }
 
@@ -346,6 +347,7 @@ hr {
 
 textarea {
   position: relative;
+  font-family: 'Mali', sans-serif;
   box-sizing: border-box;
   width: 100%;
   margin: 1rem auto;

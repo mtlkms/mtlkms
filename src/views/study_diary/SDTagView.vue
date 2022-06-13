@@ -13,14 +13,13 @@
     }">
         <div>
             <div
-            v-if="learningDiaryData.is_learning == 1"
-            @click="stopLearnPopup.isDisplay = true">
-                <div class="icon">
+            v-if="learningDiaryData.is_learning == 1">
+                <div class="icon" @click="stopLearnPopup.isDisplay = true">
                     <span class="material-icons">stop</span>
                 </div>
 
-                <p>Bắt đầu: {{ convertISOTimeToLocalDate(learningDiaryData.start_at) }}</p>
-                <p>51 phut</p>
+                <p>Bắt đầu: <b>{{ convertISOTimeToLocalDate(learningDiaryData.start_at) }}</b></p>
+                <p>Đang học <b>{{ showStopwatchTime }}</b></p>
             </div>
             <div
             v-else
@@ -36,11 +35,11 @@
                 <h3>{{ tagData.name }}</h3>
             </div>
 
-            <p>Hôm nay: {{ minutesToStr(tagData.time_today) }}</p>
-            <p>Tuần này: {{ minutesToStr(tagData.time_week) }}</p>
-            <p>Tháng này: {{ minutesToStr(tagData.time_month) }}</p>
-            <p>Năm nay: {{ minutesToStr(tagData.time_year) }}</p>
-            <p>Tổng thời gian học: {{ minutesToStr(tagData.time_total) }}</p>
+            <p>Hôm nay: <b>{{ minutesToStr(tagData.time_today) }}</b></p>
+            <p>Tuần này: <b>{{ minutesToStr(tagData.time_week) }}</b></p>
+            <p>Tháng này: <b>{{ minutesToStr(tagData.time_month) }}</b></p>
+            <p>Năm nay: <b>{{ minutesToStr(tagData.time_year) }}</b></p>
+            <p>Tổng thời gian học: <b>{{ minutesToStr(tagData.time_total) }}</b></p>
         </div>
     </div>
 
@@ -153,7 +152,9 @@ export default {
                 message: '',
                 type: '',
                 isDisplay: false
-            }
+            },
+
+            stopwatch: 0
         }
     },
 
@@ -181,6 +182,7 @@ export default {
 
             if (this.data.learningDiary.sdtag == this.tagData.id) {
                 this.learningDiaryData = this.data.learningDiary
+                this.startStopwatch()
             }
 
             this.data.isLoading = false
@@ -208,7 +210,10 @@ export default {
                     if (res.status === 200) {
                         this.learningDiaryData = data.data
                         this.data.learningDiary = this.learningDiaryData
+
                         sessionStorage.removeItem('tags')
+
+                        this.startStopwatch()
                     }
                     else {
                         console.log(data.error)
@@ -265,6 +270,7 @@ export default {
             this.stopLearnPopup.log = ''
 
             this.tagData = data.data
+            sessionStorage.removeItem('tags')
 
             this.showMessage(
                 'Thành công',
@@ -276,7 +282,7 @@ export default {
         },
 
         minutesToStr (minutes) {
-            let hours = Math.floor(minutes / 60).toFixed(2)
+            let hours = (minutes / 60).toFixed(2)
 
             return `${hours} giờ (${minutes} phút)`
         },
@@ -292,12 +298,42 @@ export default {
             return new Date(isoTime).toLocaleString('vi-VN', {
                 timeZone: 'Asia/Ho_Chi_Minh'
             })
+        },
+
+        startStopwatch () {
+            let startTime = this.learningDiaryData.start_at
+            let nowTime = new Date().toISOString()
+
+            let diff = new Date(nowTime) - new Date(startTime)
+            let seconds = Math.round(diff / 1000)
+
+            this.stopwatch = seconds
+
+            this.loopStopwatch()
+        },
+
+        loopStopwatch () {
+            if (this.learningDiaryData.is_learning) {
+                setTimeout(() => {
+                    this.stopwatch++
+                    this.loopStopwatch()
+                }, 1000)
+            }
         }
     },
 
     watch: {
         'stopLearnPopup.log' (val) {
             this.stopLearnPopup.preview = marked.parse(val)
+        }
+    },
+
+    computed: {
+        showStopwatchTime () {
+            let minutes = Math.floor(this.stopwatch / 60)
+            let seconds = this.stopwatch % 60
+
+            return `${minutes} phút ${seconds} giây`
         }
     }
 }
