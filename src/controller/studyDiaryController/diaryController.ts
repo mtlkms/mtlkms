@@ -27,12 +27,8 @@ class DiaryController {
         };
     }
 
-    public async getLearningDiary(token: string): Promise<diaryData> {
-        // Check if the user is logged in
-        let userData: UserData = await accountController.getUserDataFromToken(token);
-
-        // Get
-        let result: diaryData = await diary.getLearningDiary(String(userData.id));
+    public async getLearningDiary(user: string): Promise<diaryData> {
+        let result: diaryData = await diary.getLearningDiary(user);
         
         if (result) {
             return result;

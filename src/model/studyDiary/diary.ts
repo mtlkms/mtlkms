@@ -64,7 +64,7 @@ class Diary {
 
     public getDiariesPerMonth(data: Array<number>): Promise<Array<diaryData>> {
         return new Promise((resolve, reject) => {
-            db.query('SELECT * FROM diaries WHERE sdtag = ? AND user = ? AND MONTH(start_at) = ? AND YEAR(start_at) = ?', data, (err, result) => {
+            db.query('SELECT * FROM diaries WHERE sdtag = ? AND user = ? AND MONTH(start_at) = ? AND YEAR(start_at) = ? AND is_learning = 0 ORDER BY start_at DESC', data, (err, result) => {
                 if (err) {
                     reject(err);
                 } else {

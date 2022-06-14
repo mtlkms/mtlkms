@@ -34,8 +34,8 @@ router.put('/', (req, res) => {
 });
 
 // Get learning diary
-router.get('/learning', (req, res) => {
-    diaryController.getLearningDiary(req.cookies.token).then(result => {
+router.get('/:user', (req, res) => {
+    diaryController.getLearningDiary(req.params.user).then(result => {
         res.json({
             success: true,
             data: result
