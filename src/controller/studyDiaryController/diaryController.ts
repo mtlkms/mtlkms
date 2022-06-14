@@ -79,6 +79,12 @@ class DiaryController {
 
         return sdtag;
     }
+
+    public async getDiariesPerMonth(sdtag: number, user: number, month: number, year: number): Promise<diaryData[]> {
+        let result: diaryData[] = await diary.getDiariesPerMonth([sdtag, user, month, year]);
+
+        return result;
+    }
 }
 
 export default new DiaryController();

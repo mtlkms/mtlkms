@@ -18,6 +18,21 @@ router.post('/', (req, res) => {
     });
 });
 
+// Stop learning diary
+router.put('/', (req, res) => {
+    diaryController.stopLearningDiary(req.cookies.token, req.body).then(result => {
+        res.json({
+            success: true,
+            data: result
+        });
+    }).catch(err => {
+        res.status(400).json({
+            success: false,
+            error: err.message
+        });
+    });
+});
+
 // Get learning diary
 router.get('/learning', (req, res) => {
     diaryController.getLearningDiary(req.cookies.token).then(result => {
@@ -33,9 +48,14 @@ router.get('/learning', (req, res) => {
     });
 });
 
-// Stop learning diary
-router.put('/', (req, res) => {
-    diaryController.stopLearningDiary(req.cookies.token, req.body).then(result => {
+// Get diaries per month
+router.get('/:user/:year/:month/:sdtag', (req, res) => {
+    diaryController.getDiariesPerMonth(
+        req.params.sdtag,
+        req.params.user,
+        req.params.month,
+        req.params.year
+    ).then(result => {
         res.json({
             success: true,
             data: result
