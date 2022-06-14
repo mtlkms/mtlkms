@@ -184,13 +184,13 @@ hr {
   padding: .25rem;
   margin: 0;
   margin-bottom: 1rem;
-  background: #ffffffcc;
+  background: #ffffffaa;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(3px);
   z-index: 20;
 }
 

@@ -5,8 +5,9 @@
         <router-link :to="'/study-diary/' + tagData.id">{{ tagData.name }}</router-link>
     </div>
 
+    <!-- Tag -->
     <div
-    class="header"
+    class="header mb-4"
     :style="{
         backgroundColor: tagData.bg_color,
         color: tagData.text_color
@@ -43,6 +44,7 @@
         </div>
     </div>
 
+    <!-- Stop learn popup -->
     <Transition name="fade-in">
         <div class="popup" v-show="stopLearnPopup.isDisplay">
             <div class="popup-bg" @click="stopLearnPopup.isDisplay = false"></div>
@@ -87,6 +89,17 @@
         </div>
     </Transition>
 
+    <!-- History -->
+    <div>
+        <h3>Nhật Ký Học Tập</h3>
+
+        <ContributionDiary
+        :tag="tagData.id"
+        v-if="tagData.id != 0"
+        :refesh-toogle="refeshToggle" />
+    </div>
+
+    <!-- Message -->
     <MessagePopup
     :title="message.title"
     :message="message.message"
@@ -100,6 +113,7 @@ import store from '@/assets/js/store'
 import api from '@/assets/js/api'
 import MessagePopup from '@/components/MessagePopup.vue'
 import TextArea from '@/components/TextArea.vue'
+import ContributionDiary from '@/components/study_diary/ContributionDiary.vue'
 import { marked } from 'marked'
 
 export default {
@@ -111,7 +125,8 @@ export default {
 
     components: {
         MessagePopup,
-        TextArea
+        TextArea,
+        ContributionDiary
     },
 
     data () {
@@ -154,7 +169,8 @@ export default {
                 isDisplay: false
             },
 
-            stopwatch: 0
+            stopwatch: 0,
+            refeshToggle: false
         }
     },
 
@@ -271,6 +287,7 @@ export default {
 
             this.tagData = data.data
             sessionStorage.removeItem('tags')
+            this.refeshToggle = !this.refeshToggle
 
             this.showMessage(
                 'Thành công',
@@ -332,8 +349,9 @@ export default {
         showStopwatchTime () {
             let minutes = Math.floor(this.stopwatch / 60)
             let seconds = this.stopwatch % 60
+            let hours = (minutes / 60).toFixed(2)
 
-            return `${minutes} phút ${seconds} giây`
+            return `${minutes} phút ${seconds} giây (${hours} giờ)`
         }
     }
 }
