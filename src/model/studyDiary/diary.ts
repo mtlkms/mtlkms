@@ -49,6 +49,18 @@ class Diary {
             });
         });
     }
+
+    public deleteDiaryBySDTag(data: Array<number>): Promise<DbResult> {
+        return new Promise((resolve, reject) => {
+            db.query('DELETE FROM diaries WHERE sdtag = ? AND user = ?', data, (err, result) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(result);
+                }
+            });
+        });
+    }
 }
 
 export default new Diary();

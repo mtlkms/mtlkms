@@ -1,4 +1,5 @@
 import SDTag from '../../model/studyDiary/SDTag';
+import diary from '../../model/studyDiary/diary';
 import { DbResult, SDTagData } from '../../model/studyDiary/SDInterface';
 import { UserData } from '../../model/account/accountInterface';
 import accountController from '../../controller/accountController/accountController';
@@ -73,16 +74,19 @@ class SDTagController {
         };
     }
 
-    public async delete(token: string, id: string): Promise<boolean> {
+    public async delete(token: string, id: number): Promise<boolean> {
         // Check if the user is logged in
         let userData: UserData = await accountController.getUserDataFromToken(token);
 
-        // Delete
-        let result: DbResult = await SDTag.delete([id, String(userData.id)]);
+        // Delete tag
+        let result: DbResult = await SDTag.delete([id, userData.id]);
 
         if (result.affectedRows == 0) {
             throw new Error('Tag deletion failed');
         }
+
+        // Delete all diary entries with this tag
+        result = await diary.deleteDiaryBySDTag([id, userData.id]);
 
         return true;
     }

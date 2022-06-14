@@ -40,6 +40,6 @@ CREATE TABLE
     `stop_at` timestamp NULL DEFAULT NULL,
     `log` text DEFAULT NULL,
     PRIMARY KEY (`id`),
-    KEY `sdtag` (`sdtag`),
+    KEY `sdtag` (`sdtag`, `user`)
     KEY `select_learning` (`user`, `is_learning` DESC)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
