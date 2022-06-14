@@ -27,12 +27,8 @@ class DiaryController {
         };
     }
 
-    public async getLearningDiary(token: string): Promise<diaryData> {
-        // Check if the user is logged in
-        let userData: UserData = await accountController.getUserDataFromToken(token);
-
-        // Get
-        let result: diaryData = await diary.getLearningDiary(String(userData.id));
+    public async getLearningDiary(user: string): Promise<diaryData> {
+        let result: diaryData = await diary.getLearningDiary(user);
         
         if (result) {
             return result;
@@ -78,6 +74,12 @@ class DiaryController {
         let sdtag: SDTagData = await SDTag.getTag(diaryData.sdtag);
 
         return sdtag;
+    }
+
+    public async getDiariesPerMonth(sdtag: number, user: number, month: number, year: number): Promise<diaryData[]> {
+        let result: diaryData[] = await diary.getDiariesPerMonth([sdtag, user, month, year]);
+
+        return result;
     }
 }
 

@@ -62,7 +62,7 @@ class SDTag {
         });
     }
 
-    public delete(data: Array<string>): Promise<DbResult> {
+    public delete(data: Array<number>): Promise<DbResult> {
         return new Promise((resolve, reject) => {
             db.query('DELETE FROM sdtags WHERE id = ? AND user = ?', data, (err, result) => {
                 if (err) {

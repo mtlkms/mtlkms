@@ -49,6 +49,30 @@ class Diary {
             });
         });
     }
+
+    public deleteDiaryBySDTag(data: Array<number>): Promise<DbResult> {
+        return new Promise((resolve, reject) => {
+            db.query('DELETE FROM diaries WHERE sdtag = ? AND user = ?', data, (err, result) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(result);
+                }
+            });
+        });
+    }
+
+    public getDiariesPerMonth(data: Array<number>): Promise<Array<diaryData>> {
+        return new Promise((resolve, reject) => {
+            db.query('SELECT * FROM diaries WHERE sdtag = ? AND user = ? AND MONTH(start_at) = ? AND YEAR(start_at) = ? AND is_learning = 0 ORDER BY start_at DESC', data, (err, result) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(result);
+                }
+            });
+        });
+    }
 }
 
 export default new Diary();
