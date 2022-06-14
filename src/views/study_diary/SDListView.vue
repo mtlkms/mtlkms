@@ -83,7 +83,7 @@
                     <p>Tuần này: {{ showTime(tag.time_week) }}</p>
                     <p>Tháng này: {{ showTime(tag.time_month) }}</p>
                     <p>Năm nay: {{ showTime(tag.time_year) }}</p>
-                    <p>Tổng thời gian học: {{ showTime(tag.time_total) }}</p>
+                    <p>Tổng: {{ showTime(tag.time_total) }}</p>
                 </div>
             </div>
         </div>
@@ -131,7 +131,7 @@
                             <p>Tuần này: {{ editTagData.times.week }} giờ</p>
                             <p>Tháng này: {{ editTagData.times.month }} giờ</p>
                             <p>Năm nay: {{ editTagData.times.year }} giờ</p>
-                            <p>Tổng thời gian học: {{ editTagData.times.total }} giờ</p>
+                            <p>Tổng: {{ editTagData.times.total }} giờ</p>
                         </div>
                     </div>
                     <br>

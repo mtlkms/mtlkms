@@ -68,7 +68,7 @@ class API {
     }
 
     async getLearningDiary () {
-        let result = await this.get('/study-diary/diary/learning')
+        let result = await this.get('/study-diary/diary/' + store.get('user').id)
         let data = await result.json()
 
         if (result.status == 200) {
